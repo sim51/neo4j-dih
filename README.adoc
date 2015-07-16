@@ -1,0 +1,23 @@
+= Neo4j Data Import Handler
+Benoît Simard
+Synchronise easily Neo4j with an external datasource
+:toc:
+
+== Description
+
+This project is inspired from https://wiki.apache.org/solr/DataImportHandler[SolR's DIH].
+
+With a simple XML file that describe the import mechanism, you can synchronise your neo4j database with an external datasource (SQL & csv for now).
+
+== How to install
+
+== How to use it
+
+== Todo
+
+ * Periodic commit
+ * IHM
+ * Debug mode
+ * Adding log
+ * Make / Test neo4j extension endpoint
+ * Save the date of the last execution and put it into state
