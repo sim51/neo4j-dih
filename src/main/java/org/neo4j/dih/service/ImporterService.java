@@ -9,6 +9,7 @@ import org.neo4j.dih.datasource.csv.CSVDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.jmx.JmxUtils;
 
@@ -54,6 +55,11 @@ public class ImporterService {
     private Map<String, AbstractDataSource> dataSources;
 
     /**
+     * The cypher generated script.
+     */
+    private String script = "";
+
+    /**
      * Constructor.
      */
     public ImporterService(GraphDatabaseService graphDb, String filename, Boolean clean, Boolean debug) throws DIHException {
@@ -75,9 +81,27 @@ public class ImporterService {
      * @throws JAXBException
      */
     public void execute() throws DIHException {
+
+        // Init var that contains the cypher generated script
+        script = "";
+
+        // If clean mode is enable
+        if(clean) {
+            cypher("MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;");
+        }
+
+        // If there is a periodic commit
+        if (config.getGraph().getPeriodicCommit() != null ) {
+            script = "USING PERIODIC COMMIT " + config.getGraph().getPeriodicCommit();
+        }
+
+        // Let's process the config XML recursively
         Map<String, Object> state = new HashMap<>();
         List<Object> listEntityOrCypher = config.getGraph().getEntityOrCypher();
-        this.process(listEntityOrCypher, state);
+        process(listEntityOrCypher, state);
+
+        // Execute the cypher script
+        cypher(script);
     }
 
     /**
@@ -107,9 +131,9 @@ public class ImporterService {
         AbstractDataSource dataSource = dataSources.get(entity.getDataSource());
         AbstractResult result = dataSource.execute(entity);
         while(result.hasNext()) {
-            Map<String, Object> row = result.next();
-            row.putAll(state);
-            process(entity.getEntityOrCypher(), row);
+            Map<String, Object> childState = state;
+            childState.put(entity.getName(), result.next());
+            process(entity.getEntityOrCypher(), childState);
         }
     }
 
@@ -119,17 +143,7 @@ public class ImporterService {
      * @param cypher
      */
     protected void processCypher(String cypher, Map<String, Object> state) {
-        System.out.println(cypher);
-    }
-
-    /**
-     * Reset neo4j database.
-     */
-    protected void cleanDatabase() {
-        try (Transaction tx = graphDb.beginTx()) {
-            graphDb.execute("MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m");
-            tx.success();
-        }
+        script += template.compile(cypher, state);
     }
 
     /**
@@ -155,6 +169,21 @@ public class ImporterService {
             }
         }
         return dataSources;
+    }
+
+    /**
+     * Execute a Cypher query.
+     *
+     * @param script
+     * @return
+     */
+    protected Result cypher(String script) {
+        Result rs;
+        try (Transaction tx = graphDb.beginTx()) {
+            rs = graphDb.execute(script);
+            tx.success();
+        }
+        return rs;
     }
 
 }

@@ -5,9 +5,6 @@ import generated.EntityType;
 import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.exception.DIHException;
 
-import java.sql.*;
-import java.util.Properties;
-
 /**
  * JDBC datasource.
  */

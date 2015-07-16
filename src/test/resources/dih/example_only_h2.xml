@@ -9,12 +9,12 @@
 
     <graph periodicCommit="1000">
         <entity dataSource="sql"
-                name="table"
+                name="people"
                 sql="SELECT * FROM PEOPLE">
 
             <cypher>
-                MERGE (user:User { user :'${User}')
-                MERGE (host:Host { name:'${Host}')
+                MERGE (user:User { name :'${people.USER}' })
+                MERGE (host:Host { name:'${people.HOST}' })
                 MERGE (user)-[:OF_HOST]->(host)
             </cypher>
         </entity>

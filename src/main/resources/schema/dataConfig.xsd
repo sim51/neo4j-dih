@@ -5,7 +5,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="dataSource" type="DataSourceType" minOccurs="1" maxOccurs="unbounded"/>
-                <xs:element name="graph" type="GraphType" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="graph" type="GraphType" minOccurs="1" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

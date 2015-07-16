@@ -10,15 +10,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Result of a JDBCDataSource execution.
+ */
 public class JDBCResult extends AbstractResult {
 
+    /**
+     * The JDBC connection.
+     */
     private Connection connection;
+
+    /**
+     * The JDBC statement.
+     */
     private Statement statement;
+
+    /**
+     * ResultSet of the query.
+     */
     private ResultSet result;
+
+    /**
+     * The current row.
+     */
     private Map<String, Object> current;
 
+    /**
+     * Constructor.
+     *
+     * @param user
+     * @param password
+     * @param url
+     * @param query
+     * @throws DIHException
+     */
     public JDBCResult(String user, String password, String url, String query) throws DIHException {
-        super();
         try {
             this.connection = getConnection(user, password, url);
             this.statement = connection.createStatement();
@@ -64,6 +90,9 @@ public class JDBCResult extends AbstractResult {
         }
     }
 
+    /**
+     * Doing a forward step into the result list.
+     */
     private void step() {
         Map<String, Object> rs = null;
         try {

@@ -9,6 +9,7 @@ import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.datasource.csv.CSVDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
+import org.neo4j.graphdb.Result;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
@@ -24,12 +25,6 @@ public class ImporterServiceTest extends DIHUnitTest {
     public void prepare() throws SQLException {
         initGraphDb();
         initH2();
-    }
-
-    @Test
-    public void clean_database_should_succeed() throws DIHException {
-        ImporterService service = new ImporterService(graphDb, "example_ok.xml", false, false);
-        service.cleanDatabase();
     }
 
     @Test
@@ -58,6 +53,20 @@ public class ImporterServiceTest extends DIHUnitTest {
     public void execute_should_succeed() throws DIHException {
         ImporterService importer = new ImporterService(graphDb, "example_only_h2.xml", false, false);
         importer.execute();
+
+        Result rs = importer.cypher("MATCH (u:User)-[:OF_HOST]->(h:Host) RETURN u.name AS user, h.name AS host ORDER BY host ASC");
+
+        Map<String, Object> firstRow = rs.next();
+        Assert.assertEquals("root", firstRow.get("user"));
+        Assert.assertEquals("%", firstRow.get("host"));
+
+        Map<String, Object> secRow = rs.next();
+        Assert.assertEquals("root", secRow.get("user"));
+        Assert.assertEquals("127.0.0.1", secRow.get("host"));
+
+        Map<String, Object> thRow = rs.next();
+        Assert.assertEquals("root", thRow.get("user"));
+        Assert.assertEquals("localhost", thRow.get("host"));
     }
 
     @After
