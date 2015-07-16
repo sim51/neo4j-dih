@@ -9,6 +9,7 @@ import org.neo4j.dih.datasource.AbstractResult;
 import org.neo4j.dih.datasource.csv.CSVDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
+import org.neo4j.dih.exception.DIHRuntimeException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
@@ -16,6 +17,7 @@ import org.neo4j.jmx.JmxUtils;
 
 import javax.management.ObjectName;
 import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +83,7 @@ public class ImporterService {
         script = "";
 
         // If clean mode is enable
-        if(clean) {
+        if (clean) {
             cypher("MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;");
         }
 
@@ -109,7 +111,7 @@ public class ImporterService {
      * @throws DIHException
      */
     protected void process(List<Object> listEntityOrCypher, Map<String, Object> state) throws DIHException {
-        for(Object obj : listEntityOrCypher) {
+        for (Object obj : listEntityOrCypher) {
             if (obj instanceof EntityType) {
                 processEntity((EntityType) obj, state);
             } else {
@@ -126,11 +128,14 @@ public class ImporterService {
      */
     protected void processEntity(EntityType entity, Map<String, Object> state) throws DIHException {
         AbstractDataSource dataSource = dataSources.get(entity.getDataSource());
-        AbstractResult result = dataSource.execute(entity, state);
-        while(result.hasNext()) {
-            Map<String, Object> childState = state;
-            childState.put(entity.getName(), result.next());
-            process(entity.getEntityOrCypher(), childState);
+        try (AbstractResult result = dataSource.execute(entity, state)) {
+            while (result.hasNext()) {
+                Map<String, Object> childState = state;
+                childState.put(entity.getName(), result.next());
+                process(entity.getEntityOrCypher(), childState);
+            }
+        } catch (IOException e) {
+            throw new DIHException(e);
         }
     }
 
@@ -153,15 +158,15 @@ public class ImporterService {
         for (DataSourceType dsConfig : config.getDataSource()) {
             // TODO: make this more generic -> type == classname so we can find the class by its name
             switch (dsConfig.getType()) {
-                case "JDBCDataSource" :
+                case "JDBCDataSource":
                     JDBCDataSource jdbcDataSource = new JDBCDataSource(dsConfig);
                     dataSources.put(dsConfig.getName(), jdbcDataSource);
                     break;
-                case "CSVDataSource" :
+                case "CSVDataSource":
                     CSVDataSource csvDataSource = new CSVDataSource(dsConfig);
                     dataSources.put(dsConfig.getName(), csvDataSource);
                     break;
-                default :
+                default:
                     throw new IllegalArgumentException("Type on datasource is mandatory");
             }
         }

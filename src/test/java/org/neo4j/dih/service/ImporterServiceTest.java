@@ -38,7 +38,7 @@ public class ImporterServiceTest extends DIHUnitTest {
         CSVDataSource csv = (CSVDataSource) datasources.get("csv");
         Assert.assertEquals("UTF-8", csv.getEncoding());
         Assert.assertEquals(";", csv.getSeparator());
-        Assert.assertEquals("file:///tmp/test.csv", csv.getUrl());
+        Assert.assertTrue(csv.getUrl().contains("/target/test-classes/datasource/file.csv"));
         Assert.assertEquals(BigInteger.valueOf(10000), csv.getTimeout());
         // Assert for JDBC
         JDBCDataSource jdbc= (JDBCDataSource) datasources.get("sql");
