@@ -14,32 +14,32 @@
                 user="SA"
                 password="" />
 
-    <graph periodicCommit="1000">
+    <graph>
         <entity dataSource="csv"
                 name="line">
             <entity dataSource="sql"
                     name="people"
-                    sql="SELECT * FROM PEOPLE WHERE ID='${line.0}'">
+                    sql="SELECT * FROM PEOPLE WHERE ID='${line[0]}'">
 
                 <cypher>
-                    MERGE (user:User { name :'${people.USER}' })
-                    MERGE (host:Host { name:'${people.HOST}' })
-                    MERGE (role:Role { name:'${line.1} })
+                    MERGE (user$i:User { name :'${people.USER}' })
+                    MERGE (host$i:Host { name:'${people.HOST}' })
+                    MERGE (role$i:Role { name:'${line[1]}' })
                 </cypher>
             </entity>
         </entity>
     </graph>
 
-    <graph periodicCommit="1000">
+    <graph>
         <entity dataSource="csv"
                 name="line">
             <entity dataSource="sql"
                     name="people"
-                    sql="SELECT * FROM PEOPLE WHERE ID='${line.0}'">
+                    sql="SELECT * FROM PEOPLE WHERE ID='${line[0]}'">
 
                 <cypher>
-                    MERGE (user:User { name :'${people.USER}' })-[:OF_HOST]->(host:Host { name:'${people.HOST}' })
-                    MERGE (user)-[:HAS_ROLE]->(role:Role { name:'${line.1} })
+                    MERGE (user$i:User { name :'${people.USER}' })-[:OF_HOST]->(host$i:Host { name:'${people.HOST}' })
+                    MERGE (user$i)-[:HAS_ROLE]->(role$i:Role { name:'${line[1]}' })
                 </cypher>
             </entity>
         </entity>

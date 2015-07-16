@@ -20,7 +20,6 @@ import java.util.Map;
  */
 public class ImporterServiceTest extends DIHUnitTest {
 
-
     @Before
     public void prepare() throws SQLException {
         initGraphDb();
@@ -54,16 +53,18 @@ public class ImporterServiceTest extends DIHUnitTest {
         ImporterService importer = new ImporterService(graphDb, "example_only_h2.xml", false, false);
         importer.execute();
 
+        // Assert
+        // ~~~~~~
         Result rs = importer.cypher("MATCH (u:User)-[:OF_HOST]->(h:Host) RETURN u.name AS user, h.name AS host ORDER BY host ASC");
-
+        // First row
         Map<String, Object> firstRow = rs.next();
         Assert.assertEquals("root", firstRow.get("user"));
         Assert.assertEquals("%", firstRow.get("host"));
-
+        // Second row
         Map<String, Object> secRow = rs.next();
         Assert.assertEquals("root", secRow.get("user"));
         Assert.assertEquals("127.0.0.1", secRow.get("host"));
-
+        // Third row
         Map<String, Object> thRow = rs.next();
         Assert.assertEquals("root", thRow.get("user"));
         Assert.assertEquals("localhost", thRow.get("host"));
@@ -73,6 +74,23 @@ public class ImporterServiceTest extends DIHUnitTest {
     public void execute_complexe_should_succeed() throws DIHException {
         ImporterService importer = new ImporterService(graphDb, "example_complexe.xml", false, false);
         importer.execute();
+
+        // Assert
+        // ~~~~~~
+        Result rs = importer.cypher("MATCH (u:User)-[:OF_HOST]->(h:Host), (u)-[:HAS_ROLE]->(r:Role) RETURN u.name AS user, h.name AS host, r.name AS role ORDER BY host ASC");
+        // First row
+        Map<String, Object> firstRow = rs.next();
+        Assert.assertEquals("root", firstRow.get("user"));
+        Assert.assertEquals("%", firstRow.get("host"));
+        Assert.assertEquals("writer", firstRow.get("role"));
+        // Second row
+        Map<String, Object> secRow = rs.next();
+        Assert.assertEquals("root", secRow.get("user"));
+        Assert.assertEquals("manager", secRow.get("role"));
+        // Third row
+        Map<String, Object> thRow = rs.next();
+        Assert.assertEquals("root", thRow.get("user"));
+        Assert.assertEquals("administrator", thRow.get("role"));
     }
 
     @After

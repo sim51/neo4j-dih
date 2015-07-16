@@ -26,6 +26,10 @@ public class TemplateService {
             context.put(key, variables.get(key));
         }
 
+        // Adding a var 'i' that is unique for this script
+        // It serves as an ID
+        context.put("i", System.nanoTime());
+
         // put parameter for template
         StringWriter sw = new StringWriter();
         Velocity.evaluate(context, sw, "DIH", templateName);

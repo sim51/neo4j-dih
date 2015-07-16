@@ -12,10 +12,6 @@ import java.util.Map;
  */
 public class TemplateServiceTest extends DIHUnitTest {
 
-    /**
-     * The service to test.
-     */
-    public TemplateService service = new TemplateService();
 
     @Test
     public void compile_should_succeed() {
@@ -28,7 +24,7 @@ public class TemplateServiceTest extends DIHUnitTest {
 
         String template = "MERGE (user:User { user :'${user.name}') MERGE (host:Host { name:'${user.host}')";
 
-        String result = service.compile(template, params);
+        String result = TemplateService.compile(template, params);
 
         Assert.assertEquals("MERGE (user:User { user :'root') MERGE (host:Host { name:'localhost')", result);
     }

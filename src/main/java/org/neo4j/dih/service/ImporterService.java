@@ -87,7 +87,7 @@ public class ImporterService {
 
         // If there is a periodic commit
         for (GraphType graph : config.getGraph()) {
-            if (graph != null) {
+            if (graph.getPeriodicCommit() != null) {
                 script = "USING PERIODIC COMMIT " + graph.getPeriodicCommit();
             }
 

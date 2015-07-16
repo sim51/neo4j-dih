@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CSVResult extends AbstractResult{
@@ -37,12 +39,12 @@ public class CSVResult extends AbstractResult{
     }
 
     @Override
-    public Map<String, Object> next() {
-        Map<String, Object> rs = new HashMap<String, Object>();
+    public List<Object> next() {
+        List<Object> rs = new ArrayList<>();
 
         String[] columns = current.split(separator);
         for(int i= 0; i < columns.length; i++) {
-            rs.put(String.valueOf(i), columns[i]);
+            rs.add(columns[i]);
         }
         step();
         return rs;
