@@ -33,16 +33,17 @@ public class JDBCDataSourceTest extends DIHUnitTest {
         AbstractResult result = jdbc.execute(getEntityType("SELECT * FROM PEOPLE"), new HashMap<String, Object>());
         // First row
         HashMap<String, Object> row = (HashMap<String, Object>) result.next();
-        Assert.assertEquals("1", row.get("ID"));
+        Assert.assertEquals("1", row.get("ID").toString());
         Assert.assertEquals("root", row.get("USER"));
         Assert.assertEquals("localhost", row.get("HOST"));
         // Second row
         row = (HashMap<String, Object>) result.next();
-        Assert.assertEquals("2", row.get("ID"));
+        Assert.assertEquals("2", row.get("ID").toString());
         Assert.assertEquals("root", row.get("USER"));
         Assert.assertEquals("127.0.0.1", row.get("HOST"));
         // Third row
-        Assert.assertEquals("3", row.get("ID"));
+        row = (HashMap<String, Object>) result.next();
+        Assert.assertEquals("3", row.get("ID").toString());
         Assert.assertEquals("root", row.get("USER"));
         Assert.assertEquals("%", row.get("HOST"));
         // Testing next
