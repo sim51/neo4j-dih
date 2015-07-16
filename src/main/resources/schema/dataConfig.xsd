@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="dataConfig">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="dataSource" type="DataSourceType" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="graph" type="GraphType" minOccurs="1" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="DataSourceType">
+        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="url" type="xs:string"/>
+        <xs:attribute name="driver" type="xs:string"/>
+        <xs:attribute name="user" type="xs:string"/>
+        <xs:attribute name="password" type="xs:string"/>
+        <xs:attribute name="separator" type="xs:string"/>
+        <xs:attribute name="encoding" type="xs:string"/>
+        <xs:attribute name="timeout" type="xs:integer"/>
+    </xs:complexType>
+
+    <xs:complexType name="GraphType">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="entity" type="EntityType" minOccurs="0"/>
+                <xs:element name="cypher" type="xs:string" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="periodicCommit" type="xs:integer"/>
+    </xs:complexType>
+
+    <xs:complexType name="EntityType">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="entity" type="EntityType" minOccurs="0"/>
+                <xs:element name="cypher" type="xs:string" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="dataSource" type="xs:string" use="required" />
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="sql" type="xs:string" />
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig>
+
+    <dataSource type="CSVDataSource"
+                name="csv"
+                encoding="UTF-8"
+                url="file:///tmp/test.csv"
+                separator=";"
+                timeout="10000" />
+
+    <dataSource type="JDBCDataSource"
+                name="sql"
+                url="jdbc:h2:tcp://localhost/~/test"
+                user="SA"
+                password="" />
+
+    <graph periodicCommit="1000">
+        <entity dataSource="csv"
+                name="line">
+            <entity dataSource="sql"
+                    name="table"
+                    sql="SELECT * FROM PEOPLE WHERE id='${line[0]}'">
+                <cypher>
+                    CREATE (csv:Node { firstname :'${line[1]', lastName : '${line[2]' })
+                    CREATE (table:Table { id: ${table.id}, name:'${table.name})
+                    CREATE (csv)-[:REL]->(table)
+                </cypher>
+            </entity>
+        </entity>
+    </graph>
+

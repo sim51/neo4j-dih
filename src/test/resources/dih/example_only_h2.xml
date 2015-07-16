@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig>
+
+    <dataSource type="JDBCDataSource"
+                name="sql"
+                url="jdbc:h2:tcp://localhost/~/test"
+                user="SA"
+                password="" />
+
+    <graph periodicCommit="1000">
+        <entity dataSource="sql"
+                name="table"
+                sql="SELECT * FROM PEOPLE">
+
+            <cypher>
+                MERGE (user:User { user :'${User}')
+                MERGE (host:Host { name:'${Host}')
+                MERGE (user)-[:OF_HOST]->(host)
+            </cypher>
+        </entity>
+    </graph>
+
+</dataConfig>
