@@ -9,7 +9,6 @@ import org.neo4j.dih.datasource.AbstractResult;
 import org.neo4j.dih.datasource.csv.CSVDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
-import org.neo4j.dih.exception.DIHRuntimeException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
