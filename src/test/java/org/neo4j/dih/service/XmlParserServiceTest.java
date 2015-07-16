@@ -37,7 +37,7 @@ public class XmlParserServiceTest extends DIHUnitTest {
         DataConfig config = service.execute("example_ok.xml");
         // Testing some equality
         Assert.assertEquals(2, config.getDataSource().size());
-        Assert.assertEquals(1, config.getGraph().getEntityOrCypher().size());
+        Assert.assertEquals(1, config.getGraph().get(0).getEntityOrCypher().size());
     }
 
     /**

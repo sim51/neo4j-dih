@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig>
+
+    <dataSource type="CSVDataSource"
+                name="csv"
+                encoding="UTF-8"
+                url="file:///home/bsimard/workspace_neo/neo4j-dih/src/test/resources/datasource/file.csv"
+                separator=";"
+                timeout="10000" />
+
+    <dataSource type="JDBCDataSource"
+                name="sql"
+                url="jdbc:h2:tcp://localhost/~/test"
+                user="SA"
+                password="" />
+
+    <graph periodicCommit="1000">
+        <entity dataSource="csv"
+                name="line">
+            <entity dataSource="sql"
+                    name="people"
+                    sql="SELECT * FROM PEOPLE WHERE ID='${line.0}'">
+
+                <cypher>
+                    MERGE (user:User { name :'${people.USER}' })
+                    MERGE (host:Host { name:'${people.HOST}' })
+                    MERGE (role:Role { name:'${line.1} })
+                </cypher>
+            </entity>
+        </entity>
+    </graph>
+
+    <graph periodicCommit="1000">
+        <entity dataSource="csv"
+                name="line">
+            <entity dataSource="sql"
+                    name="people"
+                    sql="SELECT * FROM PEOPLE WHERE ID='${line.0}'">
+
+                <cypher>
+                    MERGE (user:User { name :'${people.USER}' })-[:OF_HOST]->(host:Host { name:'${people.HOST}' })
+                    MERGE (user)-[:HAS_ROLE]->(role:Role { name:'${line.1} })
+                </cypher>
+            </entity>
+        </entity>
+    </graph>
+
+</dataConfig>

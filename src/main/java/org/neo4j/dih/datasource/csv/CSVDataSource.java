@@ -7,6 +7,7 @@ import org.neo4j.dih.datasource.AbstractResult;
 import org.neo4j.dih.exception.DIHException;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 public class CSVDataSource extends AbstractDataSource {
 
@@ -44,7 +45,7 @@ public class CSVDataSource extends AbstractDataSource {
         this.timeout = config.getTimeout();
     }
 
-    public AbstractResult execute(EntityType entity) throws DIHException {
+    public AbstractResult execute(EntityType entity, Map<String, Object> state) throws DIHException {
         return new CSVResult(url, encoding, separator);
     }
 

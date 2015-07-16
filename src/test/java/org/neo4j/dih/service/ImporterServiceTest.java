@@ -50,7 +50,7 @@ public class ImporterServiceTest extends DIHUnitTest {
     }
 
     @Test
-    public void execute_should_succeed() throws DIHException {
+    public void execute_only_h2_should_succeed() throws DIHException {
         ImporterService importer = new ImporterService(graphDb, "example_only_h2.xml", false, false);
         importer.execute();
 
@@ -67,6 +67,12 @@ public class ImporterServiceTest extends DIHUnitTest {
         Map<String, Object> thRow = rs.next();
         Assert.assertEquals("root", thRow.get("user"));
         Assert.assertEquals("localhost", thRow.get("host"));
+    }
+
+    @Test
+    public void execute_complexe_should_succeed() throws DIHException {
+        ImporterService importer = new ImporterService(graphDb, "example_complexe.xml", false, false);
+        importer.execute();
     }
 
     @After

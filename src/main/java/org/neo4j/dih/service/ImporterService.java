@@ -3,6 +3,7 @@ package org.neo4j.dih.service;
 import generated.DataConfig;
 import generated.DataSourceType;
 import generated.EntityType;
+import generated.GraphType;
 import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.datasource.AbstractResult;
 import org.neo4j.dih.datasource.csv.CSVDataSource;
@@ -23,11 +24,6 @@ import java.util.Map;
  * Service that do the import job.
  */
 public class ImporterService {
-
-    /**
-     * Velocity template service
-     */
-    private TemplateService template;
 
     /**
      * The graph database instance.
@@ -64,7 +60,6 @@ public class ImporterService {
      */
     public ImporterService(GraphDatabaseService graphDb, String filename, Boolean clean, Boolean debug) throws DIHException {
         // Init services
-        this.template = new TemplateService();
         this.graphDb = graphDb;
 
         // Init config  & datasource
@@ -91,17 +86,19 @@ public class ImporterService {
         }
 
         // If there is a periodic commit
-        if (config.getGraph().getPeriodicCommit() != null ) {
-            script = "USING PERIODIC COMMIT " + config.getGraph().getPeriodicCommit();
+        for (GraphType graph : config.getGraph()) {
+            if (graph != null) {
+                script = "USING PERIODIC COMMIT " + graph.getPeriodicCommit();
+            }
+
+            // Let's process the config XML recursively
+            Map<String, Object> state = new HashMap<>();
+            List<Object> listEntityOrCypher = graph.getEntityOrCypher();
+            process(listEntityOrCypher, state);
+
+            // Execute the cypher script
+            cypher(script);
         }
-
-        // Let's process the config XML recursively
-        Map<String, Object> state = new HashMap<>();
-        List<Object> listEntityOrCypher = config.getGraph().getEntityOrCypher();
-        process(listEntityOrCypher, state);
-
-        // Execute the cypher script
-        cypher(script);
     }
 
     /**
@@ -129,7 +126,7 @@ public class ImporterService {
      */
     protected void processEntity(EntityType entity, Map<String, Object> state) throws DIHException {
         AbstractDataSource dataSource = dataSources.get(entity.getDataSource());
-        AbstractResult result = dataSource.execute(entity);
+        AbstractResult result = dataSource.execute(entity, state);
         while(result.hasNext()) {
             Map<String, Object> childState = state;
             childState.put(entity.getName(), result.next());
@@ -143,7 +140,7 @@ public class ImporterService {
      * @param cypher
      */
     protected void processCypher(String cypher, Map<String, Object> state) {
-        script += template.compile(cypher, state);
+        script += TemplateService.compile(cypher, state);
     }
 
     /**

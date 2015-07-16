@@ -4,6 +4,9 @@ import generated.DataSourceType;
 import generated.EntityType;
 import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.exception.DIHException;
+import org.neo4j.dih.service.TemplateService;
+
+import java.util.Map;
 
 /**
  * JDBC datasource.
@@ -42,8 +45,8 @@ public class JDBCDataSource extends AbstractDataSource {
      *
      * @param entity
      */
-    public JDBCResult execute(EntityType entity) throws DIHException {
-        return new JDBCResult(user, password, url, entity.getSql());
+    public JDBCResult execute(EntityType entity, Map<String, Object> state) throws DIHException {
+        return new JDBCResult(user, password, url, TemplateService.compile(entity.getSql(), state));
     }
 
     /**

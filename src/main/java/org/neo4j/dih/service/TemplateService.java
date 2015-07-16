@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class TemplateService {
 
-    public String compile(String templateName, Map<String, Object> variables) {
+    public static String compile(String templateName, Map<String, Object> variables) {
         // initialize velocity
         Properties props = new Properties();
         props.setProperty(VelocityEngine.RESOURCE_LOADER, "classpath");
