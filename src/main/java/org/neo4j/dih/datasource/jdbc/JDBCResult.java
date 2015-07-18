@@ -3,6 +3,8 @@ package org.neo4j.dih.datasource.jdbc;
 import org.neo4j.dih.datasource.AbstractResult;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.dih.exception.DIHRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.*;
@@ -14,6 +16,11 @@ import java.util.Properties;
  * Result of a JDBCDataSource execution.
  */
 public class JDBCResult extends AbstractResult {
+
+    /**
+     * The logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(JDBCResult.class);
 
     /**
      * The JDBC connection.
@@ -31,7 +38,7 @@ public class JDBCResult extends AbstractResult {
     private ResultSet result;
 
     /**
-     * The current row.
+     * The current row cursor.
      */
     private Map<String, Object> current;
 
@@ -91,12 +98,12 @@ public class JDBCResult extends AbstractResult {
     }
 
     /**
-     * Doing a forward step into the result list.
+     * Doing a step forward into the result list.
      */
     private void step() {
         Map<String, Object> rs = null;
         try {
-            if(result.next()) {
+            if (result.next()) {
                 rs = new HashMap<>();
                 for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
                     String columnName = result.getMetaData().getColumnName(i);
@@ -105,7 +112,7 @@ public class JDBCResult extends AbstractResult {
                 }
             }
         } catch (SQLException e) {
-           throw new DIHRuntimeException(e);
+            throw new DIHRuntimeException(e);
         }
         current = rs;
     }

@@ -5,6 +5,8 @@ import generated.EntityType;
 import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.dih.service.TemplateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -12,6 +14,11 @@ import java.util.Map;
  * JDBC datasource.
  */
 public class JDBCDataSource extends AbstractDataSource {
+
+    /**
+     * The logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(JDBCDataSource.class);
 
     /**
      * User to access db.
@@ -42,6 +49,7 @@ public class JDBCDataSource extends AbstractDataSource {
     }
 
     /**
+     * Execute the JDBC entity.
      *
      * @param entity
      */

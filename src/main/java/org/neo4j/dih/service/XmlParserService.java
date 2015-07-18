@@ -3,10 +3,10 @@ package org.neo4j.dih.service;
 import generated.DataConfig;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.dih.exception.DIHRuntimeException;
-import org.neo4j.jmx.JmxUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import javax.management.ObjectName;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -21,6 +21,11 @@ import java.io.File;
  * Server that parse the XML DIH config file.
  */
 public class XmlParserService {
+
+    /**
+     * The logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(XmlParserService.class);
 
     /**
      * The XML unmarshaller.

@@ -13,6 +13,8 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.jmx.JmxUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.ObjectName;
 import javax.xml.bind.JAXBException;
@@ -25,6 +27,11 @@ import java.util.Map;
  * Service that do the import job.
  */
 public class ImporterService {
+
+    /**
+     * The logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(ImporterService.class);
 
     /**
      * The graph database instance.
@@ -72,9 +79,9 @@ public class ImporterService {
     }
 
     /**
-     * Execute the import
+     * Execute the import.
      *
-     * @throws JAXBException
+     * @throws DIHException
      */
     public void execute() throws DIHException {
 
