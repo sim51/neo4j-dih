@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.management.ObjectName;
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -40,11 +39,13 @@ public class ImporterService {
 
     /**
      * Is in debug mode ?
+     * If debug mode is activated, we don't make any write operation.
      */
     private Boolean debug = Boolean.FALSE;
 
     /**
      * Is in clean mode ?
+     * If clean mode is activated, we delete all the database into a separate transaction before importing.
      */
     private Boolean clean = Boolean.FALSE;
 
@@ -62,6 +63,18 @@ public class ImporterService {
      * The cypher generated script.
      */
     private String script = "";
+
+    /**
+     * Current number of iteration.
+     * This param is used for <code>periodicCommit</code>
+     */
+    private Integer iteration = 0;
+
+    /**
+     * Current status of periodict commit (for the current <code>graph</code> import).
+     * By default, it's null, so there is no periodic commit.
+     */
+    private Integer periodicCommit;
 
     /**
      * Constructor.
@@ -85,9 +98,6 @@ public class ImporterService {
      */
     public void execute() throws DIHException {
 
-        // Init var that contains the cypher generated script
-        script = "";
-
         // If clean mode is enable
         if (clean) {
             cypher("MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;");
@@ -95,8 +105,14 @@ public class ImporterService {
 
         // If there is a periodic commit
         for (GraphType graph : config.getGraph()) {
+
+            // Init var for the graph import
+            script = "";
+            iteration = 0;
+            periodicCommit = null;
+
             if (graph.getPeriodicCommit() != null) {
-                script = "USING PERIODIC COMMIT " + graph.getPeriodicCommit();
+                periodicCommit = graph.getPeriodicCommit().intValue();
             }
 
             // Let's process the config XML recursively
@@ -104,8 +120,10 @@ public class ImporterService {
             List<Object> listEntityOrCypher = graph.getEntityOrCypher();
             process(listEntityOrCypher, state);
 
-            // Execute the cypher script
-            cypher(script);
+            // Execute the cypher script if we are not in periodic commit & debug mode
+            if (!debug && periodicCommit == null) {
+                cypher(script);
+            }
         }
     }
 
@@ -151,7 +169,15 @@ public class ImporterService {
      * @param cypher
      */
     protected void processCypher(String cypher, Map<String, Object> state) {
+        iteration++;
         script += TemplateService.compile(cypher, state);
+
+        // If we are not in debug mode AND there is a periodic commit
+        // => if the periodic commit is reached => we make a transaction !
+        if (!debug && (periodicCommit != null) && ((iteration % periodicCommit) == 0)) {
+            cypher(script);
+            script = "";
+        }
     }
 
     /**

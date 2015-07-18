@@ -15,9 +15,9 @@ With a simple XML file that describe the import mechanism, you can synchronise y
 
 == Todo
 
- * Periodic commit
  * IHM
  * Debug mode
- * Adding log
+   * Adding some debug value to the return
+ * Adding some stat about number of query by datasource & number of iteration
  * Make / Test neo4j extension endpoint
  * Save the date of the last execution and put it into state

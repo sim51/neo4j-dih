@@ -7,11 +7,12 @@
                 user="SA"
                 password="" />
 
-    <graph periodicCommit="1000">
+    <graph periodicCommit="1">
         <entity dataSource="sql"
                 name="people"
                 sql="SELECT * FROM PEOPLE">
 
+            <!-- Here we don't add $i to cypher var because we have a periodic commit of 1 -->
             <cypher>
                 MERGE (user:User { name :'${people.USER}' })
                 MERGE (host:Host { name:'${people.HOST}' })
