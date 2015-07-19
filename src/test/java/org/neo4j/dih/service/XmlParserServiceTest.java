@@ -14,7 +14,7 @@ public class XmlParserServiceTest extends DIHUnitTest {
     /**
      * Instance of the service to test.
      */
-    private XmlParserService service = new XmlParserService("src/test/resources/dih");
+    private XmlParserService service = new XmlParserService("target/test-classes/dih");
 
     @Test
     public void findConfigFileByName_success() throws DIHException {

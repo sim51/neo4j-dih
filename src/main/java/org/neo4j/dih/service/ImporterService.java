@@ -71,7 +71,7 @@ public class ImporterService {
     private Integer iteration = 0;
 
     /**
-     * Current status of periodict commit (for the current <code>graph</code> import).
+     * Current status of periodic commit (for the current <code>graph</code> import).
      * By default, it's null, so there is no periodic commit.
      */
     private Integer periodicCommit;
@@ -89,6 +89,9 @@ public class ImporterService {
         XmlParserService parser = new XmlParserService(confDir + "/dih");
         this.config = parser.execute(filename);
         this.dataSources = retrieveDataSources();
+
+        this.clean = clean;
+        this.debug = debug;
     }
 
     /**
