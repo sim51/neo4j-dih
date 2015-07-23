@@ -1,7 +1,8 @@
-package org.neo4j.dih.datasource.csv;
+package org.neo4j.dih.datasource.file.csv;
 
-import org.neo4j.dih.datasource.AbstractResult;
+import org.neo4j.dih.datasource.AbstractResultList;
 import org.neo4j.dih.exception.DIHException;
+import org.neo4j.dih.exception.DIHRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,30 +10,31 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Result for a CSVDataSource.
  */
-public class CSVResult extends AbstractResult {
+public class CSVResultList extends AbstractResultList {
 
     /**
      * The logger
      */
-    private static final Logger log = LoggerFactory.getLogger(CSVResult.class);
+    private static final Logger log = LoggerFactory.getLogger(CSVResultList.class);
 
     /**
-     * Inputstream of the CSV file.
+     * Stream of the CSV file.
      */
-    private InputStream inputStream;
+    private InputStream stream;
 
     /**
      * Buffer reader of the CSV file.
      */
     private BufferedReader bufferedReader;
-
     /**
      * CSV separator.
      */
@@ -51,21 +53,24 @@ public class CSVResult extends AbstractResult {
     /**
      * Constructor.
      *
-     * @param url       Url of the CSV file.
+     * @param url       Url of the CSV file
+     * @param timeout   Timeout
      * @param encoding  Encoding of the CSV file.
      * @param separator Separator of the CSV file.
      * @throws DIHException
      */
-    public CSVResult(String url, String encoding, String separator) throws DIHException {
+    public CSVResultList(String url, BigInteger timeout, String encoding, String separator) throws DIHException {
         try {
-            this.inputStream = new URL(url).openStream();
+            URLConnection connection = new URL(url).openConnection();
+            connection.setConnectTimeout(timeout.intValue());
+            this.stream = connection.getInputStream();
+            this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream));
+            this.separator = separator;
+            this.encoding = encoding;
+            step();
         } catch (IOException e) {
-            throw new DIHException("Error when trying to retrieve file %s", url);
+            throw new DIHException(e);
         }
-        this.bufferedReader = new BufferedReader(new InputStreamReader(this.inputStream));
-        this.separator = separator;
-        this.encoding = encoding;
-        step();
     }
 
     @Override
@@ -87,8 +92,8 @@ public class CSVResult extends AbstractResult {
 
     @Override
     public void close() throws IOException {
-        this.inputStream.close();
         this.bufferedReader.close();
+        this.stream.close();
     }
 
     /**
@@ -99,6 +104,7 @@ public class CSVResult extends AbstractResult {
             current = bufferedReader.readLine();
         } catch (IOException e) {
             current = null;
+            throw new DIHRuntimeException(e);
         }
     }
 }

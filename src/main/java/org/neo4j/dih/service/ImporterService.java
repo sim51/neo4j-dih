@@ -4,9 +4,11 @@ import generated.DataConfig;
 import generated.DataSourceType;
 import generated.EntityType;
 import generated.GraphType;
+import org.apache.commons.lang.StringUtils;
 import org.neo4j.dih.datasource.AbstractDataSource;
-import org.neo4j.dih.datasource.AbstractResult;
-import org.neo4j.dih.datasource.csv.CSVDataSource;
+import org.neo4j.dih.datasource.AbstractResultList;
+import org.neo4j.dih.datasource.file.csv.CSVDataSource;
+import org.neo4j.dih.datasource.file.xml.XMLDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -18,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.management.ObjectName;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +40,11 @@ public class ImporterService {
      * The graph database instance.
      */
     private GraphDatabaseService graphDb;
+
+    /**
+     * Property service.
+     */
+    private ImporterPropertiesService properties;
 
     /**
      * Is in debug mode ?
@@ -80,12 +89,14 @@ public class ImporterService {
      * Constructor.
      */
     public ImporterService(GraphDatabaseService graphDb, String filename, Boolean clean, Boolean debug) throws DIHException {
-        // Init services
-        this.graphDb = graphDb;
-
-        // Init config  & datasource
         ObjectName jmxConfigurationObject = JmxUtils.getObjectName(graphDb, "Configuration");
         String confDir = JmxUtils.getAttribute(jmxConfigurationObject, "store_dir");
+
+        // Init services
+        this.graphDb = graphDb;
+        this.properties = new ImporterPropertiesService(confDir, filename);
+
+        // Init config  & datasource
         XmlParserService parser = new XmlParserService(confDir + "/dih");
         this.config = parser.execute(filename);
         this.dataSources = retrieveDataSources();
@@ -101,10 +112,15 @@ public class ImporterService {
      */
     public void execute() throws DIHException {
 
-        // If clean mode is enable
-        if (clean) {
-            cypher("MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;");
-        }
+        // retrieve properties of the job
+        Map<String, Object> props = properties.readPropertiesAsMap();
+        props.put("debug", this.debug);
+        props.put("clean", this.clean);
+
+        // Process the cleaning mod if needed.
+        clean();
+        // Starting the job import
+        starting();
 
         // If there is a periodic commit
         for (GraphType graph : config.getGraph()) {
@@ -120,13 +136,58 @@ public class ImporterService {
 
             // Let's process the config XML recursively
             Map<String, Object> state = new HashMap<>();
+            state.putAll(props);
             List<Object> listEntityOrCypher = graph.getEntityOrCypher();
             process(listEntityOrCypher, state);
 
             // Execute the cypher script if we are not in periodic commit & debug mode
-            if (!debug && periodicCommit == null) {
-                cypher(script);
+            if (!debug) {
+                if (periodicCommit == null) {
+                    cypher(script);
+                }
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                String date = sdf.format(new Date());
+                properties.setProperty(ImporterPropertiesService.LAST_INDEX_TIME, date);
             }
+        }
+
+        // Ending the import
+        ending();
+    }
+
+    /**
+     * Before starting the import, we initializing some stuff.
+     *
+     * @throws DIHException
+     */
+    private void starting() throws DIHException {
+        for (String key : dataSources.keySet()) {
+            dataSources.get(key).start();
+        }
+    }
+
+    /**
+     * Before finishing the import, we closing some stuff.
+     *
+     * @throws DIHException
+     */
+    private void ending() throws DIHException {
+        for (String key : dataSources.keySet()) {
+            dataSources.get(key).finish();
+        }
+    }
+
+    /**
+     * Execute the clean mode if needed.
+     */
+    protected void clean() {
+        // If clean mode is enable
+        if (clean) {
+            String cleanQuery = "MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;";
+            if (StringUtils.isEmpty(config.getClean())) {
+                cleanQuery = config.getClean();
+            }
+            cypher(cleanQuery);
         }
     }
 
@@ -155,7 +216,7 @@ public class ImporterService {
      */
     protected void processEntity(EntityType entity, Map<String, Object> state) throws DIHException {
         AbstractDataSource dataSource = dataSources.get(entity.getDataSource());
-        try (AbstractResult result = dataSource.execute(entity, state)) {
+        try (AbstractResultList result = dataSource.execute(entity, state)) {
             while (result.hasNext()) {
                 Map<String, Object> childState = state;
                 childState.put(entity.getName(), result.next());
@@ -188,10 +249,11 @@ public class ImporterService {
      *
      * @return
      */
-    protected Map<String, AbstractDataSource> retrieveDataSources() {
+    protected Map<String, AbstractDataSource> retrieveDataSources() throws DIHException {
         Map<String, AbstractDataSource> dataSources = new HashMap<String, AbstractDataSource>();
         for (DataSourceType dsConfig : config.getDataSource()) {
             // TODO: make this more generic -> type == classname so we can find the class by its name
+            // but we need a unique package
             switch (dsConfig.getType()) {
                 case "JDBCDataSource":
                     JDBCDataSource jdbcDataSource = new JDBCDataSource(dsConfig);
@@ -200,6 +262,10 @@ public class ImporterService {
                 case "CSVDataSource":
                     CSVDataSource csvDataSource = new CSVDataSource(dsConfig);
                     dataSources.put(dsConfig.getName(), csvDataSource);
+                    break;
+                case "XMLDataSource":
+                    XMLDataSource xmlDataSource = new XMLDataSource(dsConfig);
+                    dataSources.put(dsConfig.getName(), xmlDataSource);
                     break;
                 default:
                     throw new IllegalArgumentException("Type on datasource is mandatory");

@@ -1,6 +1,6 @@
 package org.neo4j.dih.datasource.jdbc;
 
-import org.neo4j.dih.datasource.AbstractResult;
+import org.neo4j.dih.datasource.AbstractResultList;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.dih.exception.DIHRuntimeException;
 import org.slf4j.Logger;
@@ -10,22 +10,16 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Result of a JDBCDataSource execution.
  */
-public class JDBCResult extends AbstractResult {
+public class JDBCResultList extends AbstractResultList {
 
     /**
      * The logger
      */
-    private static final Logger log = LoggerFactory.getLogger(JDBCResult.class);
-
-    /**
-     * The JDBC connection.
-     */
-    private Connection connection;
+    private static final Logger log = LoggerFactory.getLogger(JDBCResultList.class);
 
     /**
      * The JDBC statement.
@@ -45,35 +39,19 @@ public class JDBCResult extends AbstractResult {
     /**
      * Constructor.
      *
-     * @param user
-     * @param password
-     * @param url
      * @param query
      * @throws DIHException
      */
-    public JDBCResult(String user, String password, String url, String query) throws DIHException {
+    public JDBCResultList(Connection connection, String query) throws DIHException {
         try {
-            this.connection = getConnection(user, password, url);
             this.statement = connection.createStatement();
             this.result = statement.executeQuery(query);
         } catch (SQLException e) {
-            throw new DIHException("Error when trying to connect & execute query %s on database %s : %s", query, url, e.getMessage());
+            throw new DIHException("Error when trying to connect & execute query %s : %s", query, e.getMessage());
         }
         step();
     }
 
-    /**
-     * Get the connection to the database.
-     *
-     * @return
-     * @throws SQLException
-     */
-    protected Connection getConnection(String user, String password, String url) throws SQLException {
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", user);
-        connectionProps.put("password", password);
-        return DriverManager.getConnection(url, connectionProps);
-    }
 
     @Override
     public boolean hasNext() {
@@ -91,7 +69,6 @@ public class JDBCResult extends AbstractResult {
     public void close() throws IOException {
         try {
             this.statement.close();
-            this.connection.close();
         } catch (SQLException e) {
             throw new IOException(e);
         }

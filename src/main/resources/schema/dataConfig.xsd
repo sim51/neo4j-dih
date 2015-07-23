@@ -7,6 +7,7 @@
                 <xs:element name="dataSource" type="DataSourceType" minOccurs="1" maxOccurs="unbounded"/>
                 <xs:element name="graph" type="GraphType" minOccurs="1" maxOccurs="unbounded" />
             </xs:sequence>
+            <xs:attribute name="clean" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
@@ -42,6 +43,7 @@
         <xs:attribute name="dataSource" type="xs:string" use="required" />
         <xs:attribute name="name" type="xs:string" use="required" />
         <xs:attribute name="sql" type="xs:string" />
+        <xs:attribute name="xpath" type="xs:string"/>
     </xs:complexType>
 
 </xs:schema>

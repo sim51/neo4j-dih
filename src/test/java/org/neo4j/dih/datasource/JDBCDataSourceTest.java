@@ -27,10 +27,11 @@ public class JDBCDataSourceTest extends DIHUnitTest {
     @Test
     public void execute_on_valid_database_should_succeed() throws DIHException {
         JDBCDataSource jdbc = getJDBCDataSource("jdbc:h2:tcp://localhost/~/test", "SA", "");
+        jdbc.start();
 
         // Assert
         // ~~~~~~
-        AbstractResult result = jdbc.execute(getEntityType("SELECT * FROM PEOPLE"), new HashMap<String, Object>());
+        AbstractResultList result = jdbc.execute(getEntityType("SELECT * FROM PEOPLE"), new HashMap<String, Object>());
         // First row
         HashMap<String, Object> row = (HashMap<String, Object>) result.next();
         Assert.assertEquals("1", row.get("ID").toString());
@@ -48,26 +49,29 @@ public class JDBCDataSourceTest extends DIHUnitTest {
         Assert.assertEquals("%", row.get("HOST"));
         // Testing next
         Assert.assertFalse(result.hasNext());
+        jdbc.finish();
     }
 
     @Test
     public void execute_on_invalid_database_should_fail() throws DIHException {
         thrown.expect(DIHException.class);
-        thrown.expectMessage("Error when trying to connect & execute query SELECT * FROM PEOPLE on database jdbc:h2:tcp://1.1.1.1/~/test");
-        thrown.expectMessage("java.net.SocketTimeoutException");
+        thrown.expectMessage("java.net.");
 
         JDBCDataSource jdbc = getJDBCDataSource("jdbc:h2:tcp://1.1.1.1/~/test", "SA", "");
+        jdbc.start();
         jdbc.execute(getEntityType("SELECT * FROM PEOPLE"), new HashMap<String, Object>());
+        jdbc.finish();
     }
 
     @Test
     public void execute_on_valid_database_with_bad_sql_should_fail() throws DIHException {
         thrown.expect(DIHException.class);
-        thrown.expectMessage("Error when trying to connect & execute query SELECT * FROMPEOPLE on database jdbc:h2:tcp://localhost/~/test");
         thrown.expectMessage("Syntax error in SQL statement");
 
         JDBCDataSource jdbc = getJDBCDataSource("jdbc:h2:tcp://localhost/~/test", "SA", "");
+        jdbc.start();
         jdbc.execute(getEntityType("SELECT * FROMPEOPLE"), new HashMap<String, Object>());
+        jdbc.finish();
     }
 
     /**
@@ -76,7 +80,7 @@ public class JDBCDataSourceTest extends DIHUnitTest {
      * @param url
      * @return
      */
-    private JDBCDataSource getJDBCDataSource(String url, String user, String password) {
+    private JDBCDataSource getJDBCDataSource(String url, String user, String password) throws DIHException {
         DataSourceType config = new DataSourceType();
         config.setName("jdbc");
         config.setType("JDBCDataSource");

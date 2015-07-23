@@ -6,12 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.dih.DIHUnitTest;
 import org.neo4j.dih.datasource.AbstractDataSource;
-import org.neo4j.dih.datasource.csv.CSVDataSource;
-import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.graphdb.Result;
 
-import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -34,23 +31,14 @@ public class ImporterServiceTest extends DIHUnitTest {
         // Assert
         // ~~~~~~
         Assert.assertEquals(2, datasources.size());
-        // Assert for CSV
-        CSVDataSource csv = (CSVDataSource) datasources.get("csv");
-        Assert.assertEquals("UTF-8", csv.getEncoding());
-        Assert.assertEquals(";", csv.getSeparator());
-        Assert.assertTrue(csv.getUrl().contains("/target/test-classes/datasource/file.csv"));
-        Assert.assertEquals(BigInteger.valueOf(10000), csv.getTimeout());
-        // Assert for JDBC
-        JDBCDataSource jdbc= (JDBCDataSource) datasources.get("sql");
-        Assert.assertEquals("jdbc:h2:tcp://localhost/~/test", jdbc.getUrl());
-        Assert.assertEquals("SA", jdbc.getUser());
-        Assert.assertEquals("", jdbc.getPassword());
+        Assert.assertNotNull(datasources.get("csv"));
+        Assert.assertNotNull(datasources.get("sql"));
 
     }
 
     @Test
     public void execute_only_h2_should_succeed() throws DIHException {
-        ImporterService importer = new ImporterService(graphDb, "example_only_h2.xml", false, false);
+        ImporterService importer = new ImporterService(graphDb, "example_only_h2_with_periodic_commit.xml", false, false);
         importer.execute();
 
         // Assert
@@ -77,20 +65,29 @@ public class ImporterServiceTest extends DIHUnitTest {
 
         // Assert
         // ~~~~~~
-        Result rs = importer.cypher("MATCH (u:User)-[:OF_HOST]->(h:Host), (u)-[:HAS_ROLE]->(r:Role) RETURN u.name AS user, h.name AS host, r.name AS role ORDER BY host ASC");
+        Result rs = importer.cypher("MATCH (u:User)-[:OF_HOST]->(h:Host), (u)-[r:HAS_ROLE]->(role:Role) RETURN u.id AS id, u.name AS user, h.name AS host, role.name AS role, r.description AS description ORDER BY id ASC");
         // First row
-        Map<String, Object> firstRow = rs.next();
-        Assert.assertEquals("root", firstRow.get("user"));
-        Assert.assertEquals("%", firstRow.get("host"));
-        Assert.assertEquals("writer", firstRow.get("role"));
+        Map<String, Object> row = rs.next();
+        Assert.assertEquals("1", row.get("id"));
+        Assert.assertEquals("root", row.get("user"));
+        Assert.assertEquals("localhost", row.get("host"));
+        Assert.assertEquals("administrator", row.get("role"));
+        Assert.assertEquals("local administrator", row.get("description"));
         // Second row
-        Map<String, Object> secRow = rs.next();
-        Assert.assertEquals("root", secRow.get("user"));
-        Assert.assertEquals("manager", secRow.get("role"));
+        row = rs.next();
+        Assert.assertEquals("2", row.get("id"));
+        Assert.assertEquals("root", row.get("user"));
+        Assert.assertEquals("127.0.0.1", row.get("host"));
+        Assert.assertEquals("manager", row.get("role"));
+        Assert.assertEquals("local manager", row.get("description"));
         // Third row
-        Map<String, Object> thRow = rs.next();
-        Assert.assertEquals("root", thRow.get("user"));
-        Assert.assertEquals("administrator", thRow.get("role"));
+        row = rs.next();
+        Assert.assertEquals("3", row.get("id"));
+        Assert.assertEquals("%", row.get("host"));
+        Assert.assertEquals("root", row.get("user"));
+        Assert.assertEquals("writer", row.get("role"));
+        Assert.assertEquals("distant writer", row.get("description"));
+
     }
 
     @After

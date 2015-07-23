@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -25,6 +23,7 @@ public class ImporterPropertiesService {
      * Name of the property for the last index date.
      */
     public static final String LAST_INDEX_TIME = "last_index_time";
+    public static final String DEFAULT_VALUE_LAST_INDEX_TIME = "1970-01-01 00:00:00";
 
     /**
      * The property file.
@@ -37,7 +36,7 @@ public class ImporterPropertiesService {
     private Properties properties;
 
     /**
-     * Constructor.
+     * By calling the constructor, if property file doesn't exist, it will be created.
      *
      * @param configPath Neo4j path where all DIH config are.
      * @param name       Name of the XML file for the import.
@@ -82,6 +81,10 @@ public class ImporterPropertiesService {
         Map<String, Object> props = new HashMap<>();
         for (String key : properties.stringPropertyNames()) {
             props.put(key, properties.getProperty(key));
+        }
+        // adding last_index_time if it doesn't exist
+        if(!props.containsKey(ImporterPropertiesService.LAST_INDEX_TIME)) {
+            props.put(ImporterPropertiesService.LAST_INDEX_TIME, DEFAULT_VALUE_LAST_INDEX_TIME);
         }
         return props;
     }

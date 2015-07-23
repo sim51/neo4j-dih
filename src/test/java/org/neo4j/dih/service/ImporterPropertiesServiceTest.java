@@ -5,9 +5,11 @@ import org.junit.Test;
 import org.neo4j.dih.DIHUnitTest;
 import org.neo4j.dih.exception.DIHException;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,14 +46,16 @@ public class ImporterPropertiesServiceTest extends DIHUnitTest {
 
     @Test
     public void save_should_succeed() throws DIHException {
-        String date = SimpleDateFormat.getDateInstance().format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        String date = sdf.format(new Date());
+        String name = UUID.randomUUID() + ".xml";
 
-        ImporterPropertiesService service = new ImporterPropertiesService("target/test-classes/dih", "example_complexe.xml");
+        ImporterPropertiesService service = new ImporterPropertiesService("target/test-classes/dih", name);
         service.setProperty(ImporterPropertiesService.LAST_INDEX_TIME, date);
         service.save();
 
         // Assertion
-        ImporterPropertiesService service2 = new ImporterPropertiesService("target/test-classes/dih", "example_complexe.xml");
+        ImporterPropertiesService service2 = new ImporterPropertiesService("target/test-classes/dih", name);
         Assert.assertEquals(date, service2.getProperty(ImporterPropertiesService.LAST_INDEX_TIME));
     }
 }

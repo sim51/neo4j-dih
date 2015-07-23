@@ -5,7 +5,7 @@ import generated.EntityType;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.neo4j.dih.DIHUnitTest;
-import org.neo4j.dih.datasource.csv.CSVDataSource;
+import org.neo4j.dih.datasource.file.csv.CSVDataSource;
 import org.neo4j.dih.exception.DIHException;
 
 import java.util.HashMap;
@@ -19,10 +19,11 @@ public class CSVDataSourceTest extends DIHUnitTest {
     @Test
     public void execute_on_local_coma_csv_file_should_succeed() throws DIHException {
         CSVDataSource csv = getCSVDataSource("file://" + ClassLoader.getSystemResource("datasource/file_coma.csv").getFile(), ",");
+        csv.start();
 
         // Assert
         // ~~~~~~
-        AbstractResult result = csv.execute(getEntityType(), new HashMap<String, Object>());
+        AbstractResultList result = csv.execute(getEntityType(), new HashMap<String, Object>());
         // First row
         List<String> row = (List<String>) result.next();
         Assert.assertEquals("1", row.get(0));
@@ -37,21 +38,27 @@ public class CSVDataSourceTest extends DIHUnitTest {
         Assert.assertEquals("writer", row.get(1));
         // Testing next
         Assert.assertFalse(result.hasNext());
+
+        csv.finish();
     }
 
     @Test
     public void execute_on_remote_file_should_succeed() throws DIHException {
         CSVDataSource csv = getCSVDataSource("http://data.nantes.fr/api/publication/24440040400129_VDN_VDN_00041/PRENOM_ENFANT_SLICE_STBL/content/?format=csv" , ";");
+        csv.start();
         csv.execute(getEntityType(), new HashMap<String, Object>());
+        csv.finish();
     }
 
     @Test
     public void execute_on_not_existing_file_should_throw_exception() throws DIHException {
         thrown.expect(DIHException.class);
-        thrown.expectMessage("Error when trying to retrieve file file://azertyuiop.csv");
+        thrown.expectMessage("java.io.FileNotFoundException: /azertyuiop.csv");
 
-        CSVDataSource csv = getCSVDataSource("file://azertyuiop.csv" , ",");
+        CSVDataSource csv = getCSVDataSource("file:///azertyuiop.csv" , ",");
+        csv.start();
         csv.execute(getEntityType(), new HashMap<String, Object>());
+        csv.finish();
     }
 
     /**

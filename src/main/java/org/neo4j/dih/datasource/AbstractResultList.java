@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Abstract class that represent a Result of a datasource execution.
  */
-public abstract class AbstractResult implements Iterator<Object>, Closeable {
+public abstract class AbstractResultList implements Iterator<Object>, Closeable {
 
     @Override
     public void remove() {

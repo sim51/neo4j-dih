@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+    <user id="1">
+        <name>root</name>
+        <role>administrator</role>
+        <host>localhost</host>
+        <description>local administrator</description>
+    </user>
+    <user id="2">
+        <name>root</name>
+        <role>manager</role>
+        <host>127.0.0.1</host>
+        <description>local manager</description>
+    </user>
+    <user id="3">
+        <name>root</name>
+        <role>writer</role>
+        <host>%</host>
+        <description>distant writer</description>
+    </user>
+</users>
+
