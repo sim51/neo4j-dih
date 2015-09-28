@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig clean="MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;">
+
+    <dataSource type="CSVDataSource"
+                name="csv"
+                encoding="UTF-8"
+                url="http://data.nantes.fr/api/publication/24440040400129_VDN_VDN_00041/PRENOM_ENFANT_SLICE_STBL/content/?format=csv"
+                separator=","
+                timeout="10000"/>
+
+
+    <graph periodicCommit="10">
+        <entity dataSource="csv"
+                name="line">
+
+            <cypher>
+                CREATE (csv$i:Node { firstname :'${line[0]}', lastName : '${line[1]}' })
+            </cypher>
+
+        </entity>
+    </graph>
+
+</dataConfig>

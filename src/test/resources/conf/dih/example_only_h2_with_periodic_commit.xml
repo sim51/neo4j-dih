@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig>
+
+    <dataSource type="JDBCDataSource"
+                name="sql"
+                url="jdbc:h2:tcp://localhost/~/test"
+                user="SA"
+                password="" />
+
+    <graph periodicCommit="1">
+        <entity dataSource="sql"
+                name="people"
+                sql="SELECT * FROM PEOPLE">
+
+            <!-- Here we don't add $i to cypher var because we have a periodic commit of 1 -->
+            <cypher>
+                MERGE (user:User { name :'${people.USER}' })
+                MERGE (host:Host { name:'${people.HOST}' })
+                MERGE (user)-[:OF_HOST]->(host)
+            </cypher>
+        </entity>
+    </graph>
+
+</dataConfig>

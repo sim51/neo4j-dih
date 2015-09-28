@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig clean="MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;">
+
+    <dataSource type="XMLDataSource"
+                name="xml"
+                encoding="UTF-8"
+                url="file:///${project.build.testOutputDirectory}/datasource/users.xml"
+                separator=";"
+                timeout="10000"/>
+
+    <dataSource type="CSVDataSource"
+                name="csv"
+                encoding="UTF-8"
+                url="file:///${project.build.testOutputDirectory}/datasource/file.csv"
+                separator=";"
+                timeout="10000"/>
+
+
+    <dataSource type="JDBCDataSource"
+                name="sql"
+                url="jdbc:h2:tcp://localhost/~/test"
+                user="SA"
+                password=""/>
+
+    <graph>
+        <entity dataSource="csv"
+                name="line">
+            <entity dataSource="sql"
+                    name="people"
+                    sql="SELECT * FROM PEOPLE WHERE ID='${line[0]}' AND ('${clean}' != 'false' OR (UPDATED > '${last_index_time}') ) ">
+
+                <cypher>
+                    MERGE (user$i:User { name :'${people.USER}', id: '${line[0]}'})
+                    MERGE (host$i:Host { name:'${people.HOST}' })
+                    MERGE (role$i:Role { name:'${line[1]}' })
+                </cypher>
+
+            </entity>
+        </entity>
+    </graph>
+
+    <graph>
+        <entity dataSource="csv"
+                name="line">
+            <entity dataSource="sql"
+                    name="people"
+                    sql="SELECT * FROM PEOPLE WHERE ID='${line[0]}' AND ('${clean}' != 'false' OR (UPDATED > '${last_index_time}') ) ">
+
+                <entity dataSource="xml"
+                        xpath="/users/user[@id='${people.ID}']"
+                        name="entity">
+
+                    <cypher>
+                        MERGE (user$i:User { name :'${people.USER}', id: '${line[0]}'})-[:OF_HOST]->(host$i:Host { name:'${people.HOST}' })
+                        MERGE (user$i)-[:HAS_ROLE { description: '${entity.xpath("description")}'} ]->(role$i:Role { name:'${line[1]}' })
+                    </cypher>
+
+                </entity>
+            </entity>
+        </entity>
+    </graph>
+
+</dataConfig>
