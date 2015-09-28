@@ -38,12 +38,12 @@ public class ImporterPropertiesService {
     /**
      * By calling the constructor, if property file doesn't exist, it will be created.
      *
-     * @param configPath Neo4j path where all DIH config are.
      * @param name       Name of the XML file for the import.
      * @throws DIHException
      */
-    public ImporterPropertiesService(String configPath, String name) throws DIHException {
-        File file = new File(configPath, name.replace(".xml", ".properties"));
+    public ImporterPropertiesService(String name) throws DIHException {
+        String fileFolder = ClassLoader.getSystemResource("conf/dih/").getFile();
+        File file = new File(fileFolder, name.replace(".xml", ".properties"));
         if (!file.exists()) {
             try {
                 file.createNewFile();

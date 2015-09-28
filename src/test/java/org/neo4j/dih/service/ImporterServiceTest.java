@@ -1,7 +1,7 @@
 package org.neo4j.dih.service;
 
-import junit.framework.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.dih.DIHUnitTest;
@@ -9,6 +9,7 @@ import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.graphdb.Result;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ import java.util.Map;
 public class ImporterServiceTest extends DIHUnitTest {
 
     @Before
-    public void prepare() throws SQLException {
+    public void prepare() throws SQLException, IOException {
         initGraphDb();
         initH2();
     }

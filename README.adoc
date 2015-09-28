@@ -6,7 +6,7 @@ Synchronise easily Neo4j with an external datasource
 == Description
 
 This project is inspired from https://wiki.apache.org/solr/DataImportHandler[SolR's DIH].
-With a simple XML file that describe the import mechanism, you can synchronise your neo4j database with an external datasource (SQL & csv for now).
+With a simple XML file that describe the import mechanism, you can synchronise your neo4j database with an external datasource (SQL, XPATH & csv for now).
 
 == How to install
 
@@ -29,5 +29,6 @@ With a simple XML file that describe the import mechanism, you can synchronise y
 * IHM
 * Debug mode : Adding some debug value to the return
 * Adding some stat about number of query by datasource & number of iteration
-* Make / Test neo4j extension endpoint
-* Adding XML/XPath datasource
+* Make update sync or async ?
+  -> Sync permit to keep ACID but how to do a rollback ?
+  -> Sync keep an open web thread till the end of the import

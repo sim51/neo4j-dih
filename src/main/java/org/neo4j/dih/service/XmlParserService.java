@@ -16,6 +16,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.File;
+import java.net.URISyntaxException;
 
 /**
  * Server that parse the XML DIH config file.
@@ -32,17 +33,12 @@ public class XmlParserService {
      */
     private Unmarshaller unmarshaller;
 
-    /**
-     * Path where to find XML files.
-     */
-    private String configPath;
 
     /**
      * Constructor of the service.
      * If something go wrong, it throw a RuntimeException, but this shouldn't happen.
      */
-    public XmlParserService(String configPath) {
-        this.configPath = configPath;
+    public XmlParserService() {
         try {
             // Create the schema
             File schemaFile = new File(ClassLoader.getSystemResource("schema/dataConfig.xsd").getFile());
@@ -57,7 +53,7 @@ public class XmlParserService {
             this.unmarshaller.setSchema(schema);
 
         } catch (JAXBException | SAXException e) {
-            throw new DIHRuntimeException( e);
+            throw new DIHRuntimeException(e);
         }
     }
 
@@ -85,8 +81,11 @@ public class XmlParserService {
      * @return
      */
     protected File findConfigFileByName(String name) throws DIHException {
-        File file = new File(this.configPath, name);
-        if(!file.exists())
+        if (ClassLoader.getSystemResource("conf/dih/" + name) == null) {
+            throw new DIHException("Config file %s doesn't exist.", name);
+        }
+        File file = new File(ClassLoader.getSystemResource("conf/dih/" + name).getFile());
+        if (!file.exists())
             throw new DIHException("Config file %s doesn't exist.", name);
         return file;
     }

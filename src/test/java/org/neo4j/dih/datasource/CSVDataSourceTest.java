@@ -2,7 +2,7 @@ package org.neo4j.dih.datasource;
 
 import generated.DataSourceType;
 import generated.EntityType;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.neo4j.dih.DIHUnitTest;
 import org.neo4j.dih.datasource.file.csv.CSVDataSource;

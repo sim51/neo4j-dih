@@ -2,7 +2,7 @@ package org.neo4j.dih.datasource;
 
 import generated.DataSourceType;
 import generated.EntityType;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import org.neo4j.dih.DIHUnitTest;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -19,7 +20,7 @@ import java.util.HashMap;
 public class JDBCDataSourceTest extends DIHUnitTest {
 
     @Before
-    public void prepare() throws SQLException {
+    public void prepare() throws SQLException, IOException {
         initGraphDb();
         initH2();
     }

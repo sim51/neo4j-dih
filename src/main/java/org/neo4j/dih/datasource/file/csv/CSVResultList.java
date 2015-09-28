@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Result for a CSVDataSource.
@@ -27,6 +28,11 @@ public class CSVResultList extends AbstractResultList {
     private static final Logger log = LoggerFactory.getLogger(CSVResultList.class);
 
     /**
+     * Regex to split CSV row
+     */
+    private String csvRowRegex;
+
+    /**
      * Stream of the CSV file.
      */
     private InputStream stream;
@@ -35,10 +41,6 @@ public class CSVResultList extends AbstractResultList {
      * Buffer reader of the CSV file.
      */
     private BufferedReader bufferedReader;
-    /**
-     * CSV separator.
-     */
-    private String separator;
 
     /**
      * CSV Encoding.
@@ -65,8 +67,23 @@ public class CSVResultList extends AbstractResultList {
             connection.setConnectTimeout(timeout.intValue());
             this.stream = connection.getInputStream();
             this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream));
-            this.separator = separator;
             this.encoding = encoding;
+
+            // Create regex for row parsing
+            String otherThanQuote = " [^\\\"] ";
+            String quotedString = String.format(" \" %s* \" ", otherThanQuote);
+            this.csvRowRegex = String.format("(?x) " + // enable comments, ignore white spaces
+                            "%s                 " + // match separator
+                            "(?=               " + // start positive look ahead
+                            "  (               " + //   start group 1
+                            "    %s*           " + //     match 'otherThanQuote' zero or more times
+                            "    %s            " + //     match 'quotedString'
+                            "  )*              " + //   end group 1 and repeat it zero or more times
+                            "  %s*             " + //   match 'otherThanQuote'
+                            "  $               " + // match the end of the string
+                            ")                 ",  // stop positive look ahead
+                    separator, otherThanQuote, quotedString, otherThanQuote);
+
             step();
         } catch (IOException e) {
             throw new DIHException(e);
@@ -82,7 +99,7 @@ public class CSVResultList extends AbstractResultList {
     public List<Object> next() {
         List<Object> rs = new ArrayList<>();
 
-        String[] columns = current.split(separator);
+        String[] columns = current.split(csvRowRegex, -1);
         for (int i = 0; i < columns.length; i++) {
             rs.add(columns[i]);
         }

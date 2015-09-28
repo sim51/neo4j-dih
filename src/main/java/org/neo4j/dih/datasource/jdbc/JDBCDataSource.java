@@ -63,7 +63,7 @@ public class JDBCDataSource extends AbstractDataSource {
 
     @Override
     public JDBCResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
-        return new JDBCResultList(connection, TemplateService.compile(entity.getSql(), state));
+        return new JDBCResultList(connection, TemplateService.getInstance().compile(entity.getSql(), state));
     }
 
     @Override

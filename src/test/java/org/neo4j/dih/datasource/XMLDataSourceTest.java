@@ -2,16 +2,14 @@ package org.neo4j.dih.datasource;
 
 import generated.DataSourceType;
 import generated.EntityType;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.neo4j.dih.DIHUnitTest;
-import org.neo4j.dih.datasource.file.csv.CSVDataSource;
 import org.neo4j.dih.datasource.file.xml.XMLDataSource;
 import org.neo4j.dih.datasource.file.xml.XMLResult;
 import org.neo4j.dih.exception.DIHException;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Test class for XML datasource.

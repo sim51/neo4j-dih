@@ -4,8 +4,11 @@ import org.h2.tools.Server;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.harness.ServerControls;
+import org.neo4j.harness.TestServerBuilders;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,6 +19,11 @@ public class DIHUnitTest {
      * Graph database instance.
      */
     protected GraphDatabaseService graphDb;
+
+    /**
+     * Graph database server.
+     */
+    protected ServerControls server;
 
     /**
      * H2 server
@@ -44,12 +52,29 @@ public class DIHUnitTest {
     }
 
     /**
+     * Create an in memory graph database server.
+     */
+    protected void initServerWithExtension() throws IOException {
+        this.server = TestServerBuilders.newInProcessBuilder()
+                .withExtension("/dih", DataImportHandlerExtension.class)
+                .newServer();
+    }
+
+    /**
+     * Destroy the in memory graph database server.
+     */
+    protected void destroyServerWithExtension() {
+        this.server.close();
+    }
+
+    /**
      * Create an in memrory H2 database.
      */
     protected void initH2() throws SQLException {
         // Create H2 database
         this.h2 = Server.createTcpServer().start();
         Connection connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test;INIT=runscript from 'classpath:/datasource/init.sql'", "SA", "");
+        connection.close();
     }
 
     /**

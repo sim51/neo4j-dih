@@ -30,7 +30,7 @@ public class XMLDataSource extends AbstractFileDataSource {
      */
     @Override
     public AbstractResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
-        return new XMLResultList(url, timeout, encoding, TemplateService.compile(entity.getXpath(), state));
+        return new XMLResultList(url, timeout, encoding, TemplateService.getInstance().compile(entity.getXpath(), state));
     }
 
     @Override

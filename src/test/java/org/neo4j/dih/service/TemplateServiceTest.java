@@ -24,7 +24,7 @@ public class TemplateServiceTest extends DIHUnitTest {
 
         String template = "MERGE (user:User { user :'${user.name}') MERGE (host:Host { name:'${user.host}')";
 
-        String result = TemplateService.compile(template, params);
+        String result = TemplateService.getInstance().compile(template, params);
 
         Assert.assertEquals("MERGE (user:User { user :'root') MERGE (host:Host { name:'localhost')", result);
     }

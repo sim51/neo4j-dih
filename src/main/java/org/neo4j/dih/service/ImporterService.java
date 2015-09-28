@@ -5,6 +5,7 @@ import generated.DataSourceType;
 import generated.EntityType;
 import generated.GraphType;
 import org.apache.commons.lang.StringUtils;
+import org.neo4j.dih.bean.ScriptStatistics;
 import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.datasource.AbstractResultList;
 import org.neo4j.dih.datasource.file.csv.CSVDataSource;
@@ -19,12 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.management.ObjectName;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service that do the import job.
@@ -86,23 +85,31 @@ public class ImporterService {
     private Integer periodicCommit;
 
     /**
+     * Some statistic on the script execution.
+     */
+    public ScriptStatistics stats;
+
+    /**
      * Constructor.
      */
     public ImporterService(GraphDatabaseService graphDb, String filename, Boolean clean, Boolean debug) throws DIHException {
-        ObjectName jmxConfigurationObject = JmxUtils.getObjectName(graphDb, "Configuration");
-        String confDir = JmxUtils.getAttribute(jmxConfigurationObject, "store_dir");
+
 
         // Init services
         this.graphDb = graphDb;
-        this.properties = new ImporterPropertiesService(confDir, filename);
+        this.properties = new ImporterPropertiesService(filename);
 
         // Init config  & datasource
-        XmlParserService parser = new XmlParserService(confDir + "/dih");
+        XmlParserService parser = new XmlParserService();
         this.config = parser.execute(filename);
         this.dataSources = retrieveDataSources();
 
-        this.clean = clean;
-        this.debug = debug;
+        if(clean != null)
+            this.clean = clean;
+        if(debug != null)
+            this.debug = debug;
+
+        this.stats = new ScriptStatistics();
     }
 
     /**
@@ -119,10 +126,10 @@ public class ImporterService {
 
         // Process the cleaning mod if needed.
         clean();
+
         // Starting the job import
         starting();
 
-        // If there is a periodic commit
         for (GraphType graph : config.getGraph()) {
 
             // Init var for the graph import
@@ -130,6 +137,7 @@ public class ImporterService {
             iteration = 0;
             periodicCommit = null;
 
+            // If there is a periodic commit
             if (graph.getPeriodicCommit() != null) {
                 periodicCommit = graph.getPeriodicCommit().intValue();
             }
@@ -184,7 +192,7 @@ public class ImporterService {
         // If clean mode is enable
         if (clean) {
             String cleanQuery = "MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;";
-            if (StringUtils.isEmpty(config.getClean())) {
+            if (!StringUtils.isEmpty(config.getClean())) {
                 cleanQuery = config.getClean();
             }
             cypher(cleanQuery);
@@ -234,7 +242,7 @@ public class ImporterService {
      */
     protected void processCypher(String cypher, Map<String, Object> state) {
         iteration++;
-        script += TemplateService.compile(cypher, state);
+        script += TemplateService.getInstance().compile(cypher, state);
 
         // If we are not in debug mode AND there is a periodic commit
         // => if the periodic commit is reached => we make a transaction !
@@ -285,6 +293,8 @@ public class ImporterService {
         try (Transaction tx = graphDb.beginTx()) {
             rs = graphDb.execute(script);
             tx.success();
+
+            this.stats.add(rs.getQueryStatistics());
         }
         return rs;
     }
