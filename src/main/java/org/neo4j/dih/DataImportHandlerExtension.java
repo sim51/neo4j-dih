@@ -1,5 +1,9 @@
 package org.neo4j.dih;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.neo4j.dih.exception.DIHRuntimeException;
 import org.neo4j.dih.service.ImporterService;
 import org.neo4j.dih.service.TemplateService;
@@ -10,13 +14,22 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.FutureTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Path("/")
 public class DataImportHandlerExtension {
@@ -32,6 +45,11 @@ public class DataImportHandlerExtension {
     private final GraphDatabaseService database;
 
     /**
+     * Thread-safe task list of import.
+     */
+    private final ConcurrentMap<String, FutureTask> tasks = new ConcurrentHashMap<String, FutureTask>();
+
+    /**
      * Constructor.
      *
      * @param database
@@ -40,39 +58,49 @@ public class DataImportHandlerExtension {
         this.database = database;
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update")
-    public Response update(@QueryParam("name") String name,
-                           @QueryParam("clean") Boolean clean,
-                           @QueryParam("debug") Boolean debug) {
+    @POST
+    @Path("/api/import")
+    public Response execute(@FormParam("name") String name,
+                           @FormParam("clean") Boolean clean,
+                           @FormParam("debug") Boolean debug,
+                            @Context Request request) {
         try {
             ImporterService importer = new ImporterService(database, name, clean, debug);
             importer.execute();
-            return Response.status(Response.Status.OK).entity(importer.stats.toJson()).build();
+            return Response.ok(importer.stats.toJson(), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.toString()).build();
+            return Response.serverError().entity(e.toString()).type( MediaType.TEXT_PLAIN).build();
         }
     }
 
     @GET
-    @Path("/ping")
+    @Path("/api/listing")
+    public Response listing() throws IOException {
+        List<String> files = ImporterService.getAllConfiguration();
+        return Response.ok(new ObjectMapper().writeValueAsString(files), MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/api/ping")
     public Response ping() {
         return Response.ok("Pong".getBytes(Charset.forName("UTF-8")), MediaType.TEXT_PLAIN).build();
     }
 
     @GET
-    @Path("/admin")
-    public Response admin() {
-        File template = new File(ClassLoader.getSystemResource("admin/index.vm").getFile());
-        String page = TemplateService.getInstance().compile(template, new HashMap<String, Object>());
-        return Response.status(Response.Status.OK).entity(page.getBytes(Charset.forName("UTF-8"))).build();
+    @Path("/api/get")
+    public Response getConfig(@QueryParam("name") String name) {
+        InputStream fileStream = findFileStream("conf/dih", name);
+        if (fileStream == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } else {
+            return Response.ok(fileStream, MediaType.APPLICATION_XML).build();
+        }
     }
 
     @GET
     @Path("{file:(?i).+\\.(png|jpg|jpeg|svg|gif|html?|js|css|txt)}")
     public Response file(@PathParam("file") String file) {
-        InputStream fileStream = findFileStream(file);
+        InputStream fileStream = findFileStream("webapp", file);
         if (fileStream == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         } else {
@@ -83,21 +111,24 @@ public class DataImportHandlerExtension {
     /**
      * Find a file in classloader and return it as an <code>InputStream</code>.
      * If file is not found, it return <code>null</code>.
+     * /!\ You are responsable to close the InputStream !
      *
-     * @param file Path/name of the file to search.
+     * @param directory Main directory where to find the file
+     * @param path Path/name of the file to search.
      * @return InputStream of the specified file or <code>null</code>
      */
-    private InputStream findFileStream(String file) {
+    private InputStream findFileStream(String directory, String path) {
         InputStream is = null;
-        URL fileUrl = ClassLoader.getSystemResource("assets/" + file);
-        log.debug("Find file %s url %s", file, fileUrl);
+        URL fileUrl = ClassLoader.getSystemResource(directory + "/" + path);
+        log.debug("Find file %s url %s", path, fileUrl);
 
         try {
             if (fileUrl != null) {
-                is = fileUrl.openStream();
+                File file = new File(fileUrl.getFile());
+                is = FileUtils.openInputStream(file);
             }
         } catch (IOException e) {
-            throw new DIHRuntimeException("File %s url %s produce error %s", file, fileUrl, e.getMessage());
+            throw new DIHRuntimeException("File %s url %s produce error %s", path, fileUrl, e.getMessage());
         }
         return is;
     }

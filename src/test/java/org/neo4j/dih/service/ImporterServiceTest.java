@@ -61,6 +61,7 @@ public class ImporterServiceTest extends DIHUnitTest {
 
     @Test
     public void execute_complexe_should_succeed() throws DIHException {
+
         ImporterService importer = new ImporterService(graphDb, "example_complexe.xml", false, false);
         importer.execute();
 

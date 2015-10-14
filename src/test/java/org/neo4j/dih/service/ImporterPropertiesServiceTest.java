@@ -26,7 +26,6 @@ public class ImporterPropertiesServiceTest extends DIHUnitTest {
         ImporterPropertiesService service = new ImporterPropertiesService( "example_complexe.xml");
 
         // Assertion
-        Assert.assertEquals("2015-07-17 11:50:17", service.getProperty(ImporterPropertiesService.LAST_INDEX_TIME));
         Assert.assertEquals("root", service.getProperty("user"));
         Assert.assertEquals("rootroot", service.getProperty("password"));
     }
@@ -37,7 +36,6 @@ public class ImporterPropertiesServiceTest extends DIHUnitTest {
         Map<String, Object> map = service.readPropertiesAsMap();
 
         // Assertion
-        Assert.assertEquals("2015-07-17 11:50:17", map.get(ImporterPropertiesService.LAST_INDEX_TIME));
         Assert.assertEquals("root", map.get("user"));
         Assert.assertEquals("rootroot", map.get("password"));
     }

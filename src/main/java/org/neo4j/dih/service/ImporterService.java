@@ -15,15 +15,15 @@ import org.neo4j.dih.exception.DIHException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.jmx.JmxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.ObjectName;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service that do the import job.
@@ -90,6 +90,25 @@ public class ImporterService {
     public ScriptStatistics stats;
 
     /**
+     * Method that find all configuration files.
+     *
+     * @return
+     */
+    public static List<String> getAllConfiguration() {
+        Pattern p = Pattern.compile("(.*).xml");
+        String path = ClassLoader.getSystemResource("conf/dih/").getFile();
+        String[] s = new File(path).list();
+        List<String> files = new ArrayList<String>();
+        for (String filename : s) {
+            Matcher m = p.matcher(filename);
+            if (m.matches()) {
+                files.add(filename);
+            }
+        }
+        return files;
+    }
+
+    /**
      * Constructor.
      */
     public ImporterService(GraphDatabaseService graphDb, String filename, Boolean clean, Boolean debug) throws DIHException {
@@ -104,9 +123,9 @@ public class ImporterService {
         this.config = parser.execute(filename);
         this.dataSources = retrieveDataSources();
 
-        if(clean != null)
+        if (clean != null)
             this.clean = clean;
-        if(debug != null)
+        if (debug != null)
             this.debug = debug;
 
         this.stats = new ScriptStatistics();
@@ -118,6 +137,10 @@ public class ImporterService {
      * @throws DIHException
      */
     public void execute() throws DIHException {
+
+        // saving the starting date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        String date = sdf.format(new Date());
 
         // retrieve properties of the job
         Map<String, Object> props = properties.readPropertiesAsMap();
@@ -153,9 +176,8 @@ public class ImporterService {
                 if (periodicCommit == null) {
                     cypher(script);
                 }
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                String date = sdf.format(new Date());
                 properties.setProperty(ImporterPropertiesService.LAST_INDEX_TIME, date);
+                properties.save();
             }
         }
 
@@ -289,12 +311,15 @@ public class ImporterService {
      * @return
      */
     protected Result cypher(String script) {
-        Result rs;
-        try (Transaction tx = graphDb.beginTx()) {
-            rs = graphDb.execute(script);
-            tx.success();
+        Result rs = null;
 
-            this.stats.add(rs.getQueryStatistics());
+        if (!StringUtils.isEmpty(script)) {
+            try (Transaction tx = graphDb.beginTx()) {
+                rs = graphDb.execute(script);
+                tx.success();
+
+                this.stats.add(rs.getQueryStatistics());
+            }
         }
         return rs;
     }

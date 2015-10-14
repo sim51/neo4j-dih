@@ -1,0 +1,87 @@
+<h1>Import {{name}}</h1>
+
+<div id="configuration">
+    <h2 ng-click="fnToggleConfiguration()">Configuration</h2>
+    <div class="row block" ng-show="configuration">
+        <div class="col-md-8" >
+            <h3>File</h3>
+            <textarea ui-codemirror="{
+                          lineNumbers: true,
+                          readOnly: 'nocursor',
+                          lineWrapping : true,
+                          mode: 'xml'
+                        }"
+                      ng-model="config">
+
+            </textarea>
+        </div>
+        <div class="col-md-4" >
+            <h3>Properties</h3>
+            <textarea ui-codemirror="{
+                          lineNumbers: true,
+                          readOnly: 'nocursor',
+                          lineWrapping : true,
+                          mode: 'properties'
+                        }"
+                      ng-model="properties">
+
+            </textarea>
+        </div>
+    </div>
+</div>
+
+<div id="import">
+    <h2 ng-click="fnToggleImport()">Execution</h2>
+    <div class="row block" ng-show="import">
+        <div class="col-md-3" >
+            <form class="form-horizontal" ng-submit="fnImport()">
+                <fieldset>
+                    <legend>Modes</legend>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="clean" type="checkbox" value="1" />
+                                    clean ?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="debug" type="checkbox" value="1" />
+                                    debug ?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+
+                <div class="form-group" ng-hide="inProgress">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Import !</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-9" >
+            <div spinner="inProgress"></div>
+            <div ng-hide="inProgress">
+                <textarea ui-codemirror="{
+                              lineNumbers: true,
+                              readOnly: 'nocursor',
+                              lineWrapping : true,
+                              mode: 'properties'
+                            }"
+                          ui-refresh='inProgress'
+                          ng-model="result" >
+                </textarea>
+            </div>
+        </div>
+    </div>
+</div>

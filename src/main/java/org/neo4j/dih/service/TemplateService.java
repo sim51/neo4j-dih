@@ -1,10 +1,12 @@
 package org.neo4j.dih.service;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.tools.ToolManager;
 import org.neo4j.dih.exception.DIHRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,11 @@ public class TemplateService {
     private static TemplateService instance = null;
 
     /**
+     * Velocity engine.
+     */
+    private VelocityEngine velocity;
+
+    /**
      * Get instance of the singleton.
      * @return
      */
@@ -43,12 +50,12 @@ public class TemplateService {
     }
 
     private TemplateService() {
-        Properties props = new Properties();
-        props.setProperty(VelocityEngine.RESOURCE_LOADER, "classpath");
-        props.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
-        props.setProperty("runtime.log.logsystem.log4j.logger", "VELOCITY");
-        props.setProperty("classpath." + VelocityEngine.RESOURCE_LOADER + ".class", ClasspathResourceLoader.class.getName());
-        Velocity.init(props);
+        this.velocity = new VelocityEngine();
+        velocity.setProperty(VelocityEngine.RESOURCE_LOADER, "classpath");
+        velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
+        velocity.setProperty("runtime.log.logsystem.log4j.logger", "VELOCITY");
+        velocity.setProperty("classpath." + VelocityEngine.RESOURCE_LOADER + ".class", ClasspathResourceLoader.class.getName());
+        velocity.init();
     }
 
     /**
@@ -62,7 +69,7 @@ public class TemplateService {
         VelocityContext context = contructContext(variables);
         // Compile the template with variables
         StringWriter sw = new StringWriter();
-        Velocity.evaluate(context, sw, "DIH", template);
+        velocity.evaluate(context, sw, "DIH", template);
         // Return the compile template
         return sw.toString();
     }
@@ -79,10 +86,10 @@ public class TemplateService {
             VelocityContext context = contructContext(variables);
             // Compile the template with variables
             StringWriter sw = new StringWriter();
-            Velocity.evaluate(context, sw, "DIH", new FileReader(template));
+            velocity.evaluate(context, sw, "DIH", FileUtils.readFileToString(template, "UTF-8"));
             // Return the compile template
             return sw.toString();
-        } catch (FileNotFoundException e) {
+        } catch (java.io.IOException e) {
             throw  new DIHRuntimeException("Error on generate volicity template " + template.getName());
         }
     }
@@ -93,8 +100,12 @@ public class TemplateService {
      * @return
      */
     private VelocityContext contructContext(Map<String, Object> variables) {
+        // adding velocity tools to context
+        ToolManager velocityToolManager = new ToolManager();
+        velocityToolManager.configure("velocity-tools.xml");
+        VelocityContext context = new VelocityContext(velocityToolManager.createContext());
+
         // Put all variable into velocity context
-        VelocityContext context = new VelocityContext();
         for (String key : variables.keySet()) {
             context.put(key, variables.get(key));
         }

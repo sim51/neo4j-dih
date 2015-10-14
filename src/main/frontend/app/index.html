@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr" ng-app="neo4j-dih-interface">
+    <head>
+        <meta charset="utf-8">
+        <title>Data Import Handler Administration</title>
+
+        <!-- inject:css -->
+        <!-- endinject -->
+
+        <!-- inject:js -->
+        <!-- endinject -->
+
+    </head>
+    <body class="container-fluid">
+        <div id="wrapper" class="row">
+
+            <aside class="col-md-2">
+                <header class="row">
+                    <div class="col-md-4">
+                        <img src="assets/images/neo4j_logo_globe.png" width="50px" alt="Neo4j logo" />
+                    </div>
+                    <h1 class="col-md-8">DIH</h1>
+                </header>
+                <section ng-controller="MenuCtrl">
+                    <h2>Import list</h2>
+                    <ul>
+                        <li ng-repeat="file in files" ng-class="{ active: isActive('/import' + file)}">
+                            <a href="#/import/{{file}}" >{{file}}</a>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+
+            <main class="col-md-10" ng-view>
+
+            </main>
+        </div>
+
+        <footer class="container-fluid">
+        </footer>
+    </body>
+</html>

@@ -1,6 +1,5 @@
 package org.neo4j.dih.bean;
 
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.neo4j.graphdb.QueryStatistics;
 
@@ -58,7 +57,7 @@ public class ScriptStatistics implements QueryStatistics {
      */
     public String toJson() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(this);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
     }
 
     @Override

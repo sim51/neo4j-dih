@@ -26,9 +26,13 @@ With a simple XML file that describe the import mechanism, you can synchronise y
 
 == Todo
 
-* IHM
-* Debug mode : Adding some debug value to the return
 * Adding some stat about number of query by datasource & number of iteration
+  -> I think it's done => test it !
+* Debug mode : Adding some debug value to the return
+  -> returning cypher generated script ?
+  -> returning datasource vale & query ?
 * Make update sync or async ?
   -> Sync permit to keep ACID but how to do a rollback ?
   -> Sync keep an open web thread till the end of the import
+* CSV Datasource
+  -> test with stripping column
