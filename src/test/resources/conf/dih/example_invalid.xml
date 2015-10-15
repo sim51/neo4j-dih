@@ -20,9 +20,9 @@
                 name="people"
                 sql="SELECT * FROM PEOPLE WHERE id='${line[0]}'">
             <cypher>
-                CREATE (csv:Node { firstname :'${line[1]', lastName : '${line[2]' })
-                CREATE (table:Table { id: ${table.id}, name:'${table.name} })
-                CREATE (csv)-[:REL]->(table)
+                CREATE (csv$i:Node { firstname :'${line[1]', lastName : '${line[2]' })
+                CREATE (table$i:Table { id: ${table.id}, name:'${table.name} })
+                CREATE (csv$i)-[:REL]->(table$i)
             </cypher>
         </entity>
     </entity>

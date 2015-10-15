@@ -5,7 +5,6 @@
                 name="xml"
                 encoding="UTF-8"
                 url="file:///${project.build.testOutputDirectory}/datasource/users.xml"
-                separator=";"
                 timeout="10000"/>
 
     <dataSource type="CSVDataSource"
