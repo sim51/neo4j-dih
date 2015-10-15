@@ -10,15 +10,64 @@ With a simple XML file that describe the import mechanism, you can synchronise y
 
 == How to install
 
+There is only three steps to install this extension :
+
+ * unzip all the content of the zip into `NEO4J_HOME/plugins` folder
+ * Edit file NEO4J_HOME/conf/neo4j.properties` to adding the following line :
+[source, xml]
+----
+incude::src/test/resources/conf/dih/example_csv.xml
+----
+
+ * Restart your Neo4j server
+
+Now if you open your browser at this url `http://localhost:7474/dih/api/ping`, you should received a `pong` message.
+
 == How to use it
+
+=== Execute an import
+
+To perfom an import, you have to call REST endpoint :
+
+ * url : `http://localhost:7474/dih/api/import`
+ * method :  `POST`
+ * form-param :
+ ** name (mandatory) : the name of your import file (ex: example_csv.xml)
+ ** clean (optional) : true / **false (default)**
+ ** debug (optional) : true / **false (default)**
+
+For each of your import files, you can execute them with two options : clean & debug.
+
+==== Clean
+
+This execute a clean cypher query before starting the import.
+By default it's a `MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;` query, ie a reset of the database.
+But you can specify your own query on the `dataConfig` xml entity like in this example :
+
+[source, xml]
+----
+incude::src/test/resources/conf/dih/example_csv.xml[]
+----
+
+==== Debug
+
+Debug just make a dry run of your import, this won't modify your database (even with the clean option).
+Moreover, this adding some debug output.
+
+=== Administration interface
+
+Open your browser at this location `http://localhost:7474/dih/admin` to see the administration interface.
+
+image
+
+This interface permit to :
+
+ * see all configuration file
+ * to execute an import
 
 == Documentation
 
-=== Modes
 
-==== Clean mode
-
-==== Debug mode
 
 === Configuration file
 
@@ -27,7 +76,6 @@ With a simple XML file that describe the import mechanism, you can synchronise y
 == Todo
 
 * Adding some stat about number of query by datasource & number of iteration
-  -> I think it's done => test it !
 * Debug mode : Adding some debug value to the return
   -> returning cypher generated script ?
   -> returning datasource vale & query ?

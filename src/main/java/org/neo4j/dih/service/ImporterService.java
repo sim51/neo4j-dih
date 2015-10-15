@@ -148,7 +148,9 @@ public class ImporterService {
         props.put("clean", this.clean);
 
         // Process the cleaning mod if needed.
-        clean();
+        if(!debug) {
+            clean();
+        }
 
         // Starting the job import
         starting();
