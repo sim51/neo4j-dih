@@ -1,6 +1,7 @@
 = Neo4j Data Import Handler
 Benoît Simard <github@bsimard.com>
 Synchronise Neo4j with an external datasource
+:experimental:
 :toc:
 :toc-placement: preamble
 :toc-title: pass:[<b>Table of Contents</b>]
