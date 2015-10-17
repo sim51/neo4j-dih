@@ -1,6 +1,6 @@
 = Neo4j Data Import Handler
-Benoît Simard <github@bsimard.com>
-Synchronise Neo4j with an external datasource
+Benoit Simard <github@bsimard.com>
+V1.0
 :experimental:
 :toc:
 :toc-placement: preamble
@@ -11,6 +11,8 @@ ifndef::env-github[]
 :idprefix:
 :idseparator: -
 endif::[]
+
+Synchronise Neo4j with an external datasource
 
 == Description
 
