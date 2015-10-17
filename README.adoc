@@ -1,19 +1,19 @@
 = Neo4j Data Import Handler
-Benoît Simard<github@bsimard.com>
+Benoît Simard <github@bsimard.com>
 Synchronise Neo4j with an external datasource
-:toc: right
+:toc:
 
 == Description
 
 This project is inspired from https://wiki.apache.org/solr/DataImportHandler[SolR's DIH].
-With a simple XML file that describe the import mechanism, you can synchronise your neo4j database with an external datasource (SQL, XPATH & csv for now).
+With a simple XML file that describe an import mechanism, you can synchronise your neo4j database with an external datasource Like a SQL database, CSV/XML/JSON file ...
 
 == How to install
 
 There is only three steps to install this extension :
 
  * unzip all the content of the zip into `NEO4J_HOME/plugins` folder
- * Edit file NEO4J_HOME/conf/neo4j-server.properties` and to add the following line :
+ * Edit file `NEO4J_HOME/conf/neo4j-server.properties` and to add the following line :
 
 [source,properties]
 ----
@@ -22,17 +22,18 @@ org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.dih.DataImportHandlerExtensi
 
  * Restart your Neo4j server
 
-Now if you open your browser at this url `http://localhost:7474/dih/api/ping`, you should received a `pong` message.
 
-IMPORTANT: DIH plugin doesn't have any dependency on datasource's driver.
-So for example, if you want to connect to a mysql database, please add the mysql driver jar in this directory `NEO4J_HOME/plugins`.
+Now if you open your browser at this url http://localhost:7474/dih/api/ping[], you should received a `pong` message.
+
+IMPORTANT: DIH plugin doesn't have any dependency on datasource driver.
+So for example, if you want to connect to a mysql database, please add mysql driver jar in this directory `NEO4J_HOME/plugins`.
 
 == How to write an import
 
 An import is just an XML file that must be placed into this directory : `NEO4J_HOME/conf/dih`.
-You can see some examples of import file here : https://github.com/sim51/neo4j-dih/src/test/reources/conf/dih
+You can see some examples of import file https://github.com/sim51/neo4j-dih/src/test/resources/conf/dih[here]
 
-This XML file must be compliant with the followind schema :
+This XML file must be compliant with the following schema :
 
 [source,xml]
 ----
@@ -41,13 +42,13 @@ include::src/main/resources/schema/dataConfig.xsd[]
 
 On the next section, you will find the description of every elements.
 
-Moeover, you can externalize some variables of your import scrpt into a property file.
+Moreover, you can externalize some variables of your import script into a property file.
 It must be in the same directory, and with the same name (ie. change only the extension .xml by .properties).
 For example, if you have a key `db.user` into property file, you can use it like this in the xml import file : `${db.user}
 
-In fact this file is automaticly created (if it's not there) when you run the first successfull import.
-It's because we save into it the date & time of the last successfull import execution  into the property `last_index_time`.
-This is usefull for *delta-impor* to retrieve data from a dataource that have an updated more recent than the last execution time.
+In fact this file is automatically created (if it's not there) when you run the first successful import.
+It's because we save into it the date & time of the last successful import execution  into the property `last_index_time`.
+This is useful for *delta-import* to retrieve data from a datasource that have an updated more recent than the last execution time.
 
 === Definition of xml elements
 
@@ -62,7 +63,7 @@ This is the root XML element of the file.
 ==== Element : dataSource
 
 This element define a datasource.
-A datasource is an external resources, on wich you can retrieve some data.
+A datasource is an external resources, on which you can retrieve some data.
 
 Here is the list of available datasource with theirs attributes :
 
@@ -80,7 +81,6 @@ Here is the list of available datasource with theirs attributes :
   ** name (mandatory): Name of the datasource. Must be unique in the file.
   ** url (mandatory): Url of the file. It be local (file://) or distant (http://), it's just a java url.
   ** encoding : Encoding of the CSV file (Default: "UTF-8").
-  ** separator : Character that is use as separator (Default: ";").
   ** timeout : Timeout (Default: 10000)
 
  * *JDBCDatasource* : Define a JDBC connection . You will be able to *SQL* query on it.
@@ -90,33 +90,37 @@ Here is the list of available datasource with theirs attributes :
   ** user : User that is use to connect to the database
   ** password : Password of user
 
- * JSONDatasource :  Define a JSON file. You will be able to make *JSON PATH* query.
-  ** TODO
+ * *JSONDatasource* :  Define a JSON file. You will be able to make *JSON PATH* query (seee http://goessner.net/articles/JsonPath/).
+  ** type (mandatory): Must be `JSONDataSource `
+  ** name (mandatory): Name of the datasource. Must be unique in the file.
+  ** url (mandatory): Url of the file. It be local (file://) or distant (http://), it's just a java url.
+  ** encoding : Encoding of the CSV file (Default: "UTF-8").
+  ** timeout : Timeout (Default: 10000)
 
-NOTE: See paragraphe 'How to write a new datasource type'
+NOTE: See paragraph 'How to write a new datasource type'
 
 ==== Element : graph
 
-This element is optional, it permit to create several independant imports phases.
+This element is optional, it permit to create several independent imports phases.
 
 *list of attributes :*
 
- * *periodicCommit (optional)* : Define a periodict commit number. It correspond to the number of iteration on cypher part. By default, all is done in the same transaction.
+ * *periodicCommit (optional)* : Define a periodic commit number. It correspond to the number of iteration on cypher part. By default, all is done in the same transaction.
 
 ==== Element : entity
 
 This element permit to define a list of object, retrieve from a datasource: it's a resultset.
-The import processus will iterate on on it.
+The import process will iterate on on it.
 
-There is two mandatories attributes :
+There is two mandatory attributes :
 
  * *datasource* : Name of the datasource to use for this entity
- * *name* : Name for this entity taht will permit you can retrieve its value/field.
+ * *name* : Name for this entity that will permit you can retrieve its value/field.
 
-Others caractresitics will depend on its datasource :
+Others characteristics will depend on its datasource :
 
 * *CSVDatasource* :
- ** There is no additional attribute for this datasrouce, because we can't do any `query` operation on a CSV file.
+ ** There is no additional attribute for this datasource, because we can't do any `query` operation on a CSV file.
  ** Type of this entity is just an array of String (String[]). So in your cypher script you can access to a value like this `${entity[0]}` or `${entity["columnName"]}` with header.
 
 * *XMLDatasource* :
@@ -125,7 +129,11 @@ Others caractresitics will depend on its datasource :
 
 * *JDBCDatasource* :
  ** sql (mandatory) : the SQL query
- ** ** Type of this entity is  `Map<String, Object>`. So in your cypher script you can acces to a value like this `${entity.myColName}`
+ ** ** Type of this entity is  `Map<String, Object>`. So in your cypher script you can access to a value like this `${entity.myColName}`
+
+* *JSONDatasource* :
+ ** xpath (mandatory) : An JSONPath query (http://goessner.net/articles/JsonPath/), for example : `xpath="$..book[*]"`.
+ ** Type of this entity is  `Map<String, Object>`. So in your cypher script you can access to a value like this `${entity["key"]}`
 
 ==== Element : cypher
 
@@ -134,13 +142,13 @@ In it, you can use all parent entity by their name like you have seen on the abo
 
 NOTE: This cypher script is parse with velocity, so you can use velocity power !
 
-IMPORTANT: If in your cypher script there is some cvariables (as on 99% of times) and `periodictCommit` is not equal to 1,
+IMPORTANT: If in your cypher script there is some variables (as on 99% of times) and `periodicCommit` is not equal to 1,
 you should suffix all your variable with `$i` like this : MATCH (n$i:MyNode))`.
 Otherwise on the generated cypher script, there will be the same variable defined several times.
 
 == How to execute an import
 
-To perfom an import, you have to call REST endpoint :
+To perform an import, you have to call REST endpoint :
 
  * url : `http://localhost:7474/dih/api/import`
  * method :  `POST`
@@ -155,7 +163,7 @@ So it's easy to schedule an import job (with delta-import it cool) with a cron a
 
 [source,bash]
 ----
-curl http://localhost:7474/dih/api/import -d "name=example_csv.xml&clean=true$debug=false"
+curl http://localhost:7474/dih/api/import -d "name=example_csv.xml&clean=true&debug=false"
 ----
 
 === Clean
@@ -202,14 +210,14 @@ To do it, follow those instructions :
 
  * Edit the file `src/main/resources/schema/dataConfig.xsd`
  * Search the XSD description for *DataSourceType* (ie. line :  `<xs:complexType name="DataSourceType">`)
- * Add your new attribut (for example :`myAttribute`) into the element like this : `<xs:attribute name="myAttribute" type="xs:string"/>` (replace `xs:string` by the type of your attribute)
+ * Add your new attribute (for example :`myAttribute`) into the element like this : `<xs:attribute name="myAttribute" type="xs:string"/>` (replace `xs:string` by the type of your attribute)
  * Save the file and compile the project
 
 You can do the same for *entity* element :
 
  * Edit the file `src/main/resources/schema/dataConfig.xsd`
  * Search the XSD description for *EntityType* (ie. line :  `<xs:complexType name="EntityType">`)
- * Add your new attribut (for example :`myAttribute`) into the element like this : `<xs:attribute name="myAttribute" type="xs:string"/>` (replace `xs:string` by the type of your attribute)
+ * Add your new attribute (for example :`myAttribute`) into the element like this : `<xs:attribute name="myAttribute" type="xs:string"/>` (replace `xs:string` by the type of your attribute)
  * Save the file and compile the project
 
 NOTE: Project use *JAXB* to parse XML files.
@@ -222,7 +230,7 @@ There is three points to respect :
 
  * you must extend `org.neo4j.dih.datasource.AbstractDataSource` class
  * your class must be into the package `org.neo4j.dih.datasource`
- * name of your class is what you will put into the *type* attribute of *datasoure* element
+ * name of your class is what you will put into the *type* attribute of *datasource* element
 
 This is the definition of `AbstractDataSource` :
 
@@ -261,4 +269,3 @@ So as you can see, it's just an auto-closeable iterator ! You can take example o
 * Make update sync or async ?
   -> Sync permit to keep ACID but how to do a rollback ? There no 2-way-commit, so for ACID ..
   -> Sync keep an open web thread till the end of the import (it's what is implement now, but if you call 100 time the import endpoint, this generate 100 imports)
-* Adding JSON Datasource
