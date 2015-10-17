@@ -24,11 +24,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Service that do the import job.
@@ -103,7 +100,7 @@ public class ImporterService {
      * @return a {@link java.util.List} object.
      */
     public static List<String> getAllConfiguration() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList();
 
         String path = ClassLoader.getSystemResource("conf/dih/").getFile();
         Collection<File> files = FileUtils.listFiles(new File(path), new String[]{"xml"}, true);
@@ -260,9 +257,8 @@ public class ImporterService {
         AbstractDataSource dataSource = dataSources.get(entity.getDataSource());
         try (AbstractResultList result = dataSource.execute(entity, state)) {
             while (result.hasNext()) {
-                Map<String, Object> childState = state;
-                childState.put(entity.getName(), result.next());
-                process(entity.getEntityOrCypher(), childState);
+                state.put(entity.getName(), result.next());
+                process(entity.getEntityOrCypher(), state);
             }
         } catch (IOException e) {
             throw new DIHException(e);
@@ -294,7 +290,7 @@ public class ImporterService {
      * @throws org.neo4j.dih.exception.DIHException if any.
      */
     protected Map<String, AbstractDataSource> retrieveDataSources() throws DIHException {
-        Map<String, AbstractDataSource> dataSources = new HashMap<String, AbstractDataSource>();
+        Map<String, AbstractDataSource> dataSources = new HashMap();
         for (DataSourceType dsConfig : config.getDataSource()) {
             // but we need a unique package
             switch (dsConfig.getType()) {

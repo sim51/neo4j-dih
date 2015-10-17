@@ -2,3 +2,4 @@
 *.iml
 src/main/frontend/node_modules
 target
+neo4j-home

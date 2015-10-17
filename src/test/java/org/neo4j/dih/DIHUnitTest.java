@@ -42,7 +42,7 @@ public class DIHUnitTest {
     protected void initGraphDb() {
         // Create Neo4j in memory database.
         this.graphDb = new TestGraphDatabaseFactory()
-                .newImpermanentDatabaseBuilder("target/test-classes")
+                .newImpermanentDatabaseBuilder()
                 .loadPropertiesFromFile("target/test-classes/neo4j.properties")
                 .newGraphDatabase();
     }

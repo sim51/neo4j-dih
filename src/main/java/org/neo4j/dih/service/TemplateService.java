@@ -5,7 +5,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.apache.velocity.tools.ToolManager;
 import org.neo4j.dih.exception.DIHRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,7 @@ public class TemplateService {
         // Return the compile template
         String result = sw.toString();
         if(log.isDebugEnabled())
-            log.debug("Velocity compile template \n template => %s \n\n variables => %s \n\n result => %s", template, variables, result);
+            log.debug("Velocity compile template \n template => {} \n\n variables => {} \n\n result => {}", template, variables, result);
         return result;
     }
 
@@ -99,10 +98,7 @@ public class TemplateService {
      * @return
      */
     private VelocityContext constructContext(Map<String, Object> variables) {
-        // adding velocity tools to context
-        ToolManager velocityToolManager = new ToolManager();
-        velocityToolManager.configure("velocity-tools.xml");
-        VelocityContext context = new VelocityContext(velocityToolManager.createContext());
+        VelocityContext context = new VelocityContext();
 
         // Put all variable into velocity context
         for (String key : variables.keySet()) {
