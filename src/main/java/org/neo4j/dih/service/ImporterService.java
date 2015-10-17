@@ -13,6 +13,7 @@ import org.neo4j.dih.datasource.file.csv.CSVDataSource;
 import org.neo4j.dih.datasource.file.xml.XMLDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
+import org.neo4j.dih.exception.DIHRuntimeException;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
@@ -21,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -296,7 +299,19 @@ public class ImporterService {
                     dataSources.put(dsConfig.getName(), xmlDataSource);
                     break;
                 default:
-                    throw new IllegalArgumentException("Type on datasource is mandatory");
+                    try {
+                        Class c = Class.forName("org.neo4j.dih.datasource." + dsConfig.getType());
+                        Constructor constructor = c.getConstructor(DataSourceType.class);
+                        AbstractDataSource dataSource = (AbstractDataSource) constructor.newInstance((dsConfig));
+                        dataSources.put(dsConfig.getName(), dataSource);
+                    } catch (ClassNotFoundException e) {
+                        throw new DIHRuntimeException("Type %s on datasource is mandatory and must exist", dsConfig.getType());
+                    } catch (NoSuchMethodException e) {
+                        throw new DIHRuntimeException("Datasource %s must implement AbstractDataSource", dsConfig.getType());
+                    } catch (Exception e) {
+                        throw new DIHRuntimeException(e);
+                    }
+
             }
         }
         return dataSources;
