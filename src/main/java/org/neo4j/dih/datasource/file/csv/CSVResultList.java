@@ -1,20 +1,21 @@
 package org.neo4j.dih.datasource.file.csv;
 
+import au.com.bytecode.opencsv.CSVParser;
+import au.com.bytecode.opencsv.CSVReader;
 import org.neo4j.dih.datasource.AbstractResultList;
 import org.neo4j.dih.exception.DIHException;
 import org.neo4j.dih.exception.DIHRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -28,11 +29,6 @@ public class CSVResultList extends AbstractResultList {
     private static final Logger log = LoggerFactory.getLogger(CSVResultList.class);
 
     /**
-     * Regex to split CSV row
-     */
-    private String csvRowRegex;
-
-    /**
      * Stream of the CSV file.
      */
     private InputStream stream;
@@ -43,50 +39,80 @@ public class CSVResultList extends AbstractResultList {
     private BufferedReader bufferedReader;
 
     /**
+     * CSVreader.
+     */
+    private CSVReader csvReader;
+
+    /**
      * CSV Encoding.
      */
     private String encoding;
 
     /**
+     * With CSV header.
+     */
+    private Boolean withHeader = Boolean.FALSE;
+
+    /**
+     * CSV header columns.
+     */
+    private List<String> headers;
+
+    /**
      * The current row cursor.
      */
-    private String current;
+    private String[] current;
 
     /**
      * Constructor.
      *
-     * @param url       Url of the CSV file
-     * @param timeout   Timeout
-     * @param encoding  Encoding of the CSV file.
-     * @param separator Separator of the CSV file.
+     * @param url        Url of the CSV file
+     * @param timeout    Timeout
+     * @param encoding   Encoding of the CSV file.
+     * @param separator  Separator of the CSV file.
+     * @param withHeader Is there a header in CSV file
      * @throws DIHException
      */
-    public CSVResultList(String url, BigInteger timeout, String encoding, String separator) throws DIHException {
+    public CSVResultList(String url, BigInteger timeout, String encoding, String separator, Boolean withHeader) throws DIHException {
         try {
             URLConnection connection = new URL(url).openConnection();
             connection.setConnectTimeout(timeout.intValue());
             this.stream = connection.getInputStream();
-            this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream));
             this.encoding = encoding;
-
-            // Create regex for row parsing
-            String otherThanQuote = " [^\\\"] ";
-            String quotedString = String.format(" \" %s* \" ", otherThanQuote);
-            this.csvRowRegex = String.format("(?x) " + // enable comments, ignore white spaces
-                            "%s                 " + // match separator
-                            "(?=               " + // start positive look ahead
-                            "  (               " + //   start group 1
-                            "    %s*           " + //     match 'otherThanQuote' zero or more times
-                            "    %s            " + //     match 'quotedString'
-                            "  )*              " + //   end group 1 and repeat it zero or more times
-                            "  %s*             " + //   match 'otherThanQuote'
-                            "  $               " + // match the end of the string
-                            ")                 ",  // stop positive look ahead
-                    separator, otherThanQuote, quotedString, otherThanQuote);
+            this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream));
+            this.csvReader = new CSVReader(bufferedReader, separator.charAt(0));
+            this.withHeader = withHeader;
 
             step();
+
+            if(withHeader) {
+                readHeader();
+            }
         } catch (IOException e) {
             throw new DIHException(e);
+        }
+    }
+
+    /**
+     * Read CSV Header.
+     */
+    private void readHeader() throws IOException {
+        headers = new ArrayList<>();
+        for (int i = 0; i < current.length; i++) {
+            headers.add(i, current[i]);
+        }
+        step();
+    }
+
+    /**
+     * Doing a step forward into the result list.
+     */
+    private void step() {
+        try {
+            current = csvReader.readNext();
+        } catch (IOException e) {
+            current = null;
+            throw new DIHRuntimeException(e);
         }
     }
 
@@ -96,12 +122,17 @@ public class CSVResultList extends AbstractResultList {
     }
 
     @Override
-    public List<Object> next() {
-        List<Object> rs = new ArrayList<>();
+    public Map<Object, String> next() {
+        Map<Object, String> rs = new HashMap();
 
-        String[] columns = current.split(csvRowRegex, -1);
-        for (int i = 0; i < columns.length; i++) {
-            rs.add(columns[i]);
+        for (int i = 0; i < current.length; i++) {
+            if(withHeader) {
+                String name = headers.get(i);
+                rs.put(name, current[i]);
+            }
+            else {
+                rs.put(i, current[i]);
+            }
         }
         step();
         return rs;
@@ -109,19 +140,9 @@ public class CSVResultList extends AbstractResultList {
 
     @Override
     public void close() throws IOException {
-        this.bufferedReader.close();
         this.stream.close();
+        this.bufferedReader.close();
+        this.csvReader.close();
     }
 
-    /**
-     * Doing a step forward into the result list.
-     */
-    private void step() {
-        try {
-            current = bufferedReader.readLine();
-        } catch (IOException e) {
-            current = null;
-            throw new DIHRuntimeException(e);
-        }
-    }
 }
