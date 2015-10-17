@@ -48,9 +48,9 @@ public class XMLResultList extends AbstractResultList {
     /**
      * Constructor.
      *
-     * @param url       Url of the CSV file
-     * @param timeout   Tileout
-     * @param encoding  Encoding of the CSV file.
+     * @param url       Url of the XML file
+     * @param timeout   Timeout
+     * @param encoding  Encoding of the XML file.
      * @param query     For each XPATH query
      * @throws DIHException
      */

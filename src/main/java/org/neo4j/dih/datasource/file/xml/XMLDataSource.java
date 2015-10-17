@@ -21,7 +21,7 @@ public class XMLDataSource extends AbstractFileDataSource {
     }
 
     /**
-     * Execute the XML entity, ie. read the CSV file.
+     * Execute the XML entity, ie. read the XML file.
      *
      * @param entity The entity to execute.
      * @param state  Current state of all declare variable.
