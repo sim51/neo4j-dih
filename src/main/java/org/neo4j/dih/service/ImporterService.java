@@ -4,6 +4,7 @@ import generated.DataConfig;
 import generated.DataSourceType;
 import generated.EntityType;
 import generated.GraphType;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.dih.bean.ScriptStatistics;
 import org.neo4j.dih.datasource.AbstractDataSource;
@@ -95,17 +96,14 @@ public class ImporterService {
      * @return
      */
     public static List<String> getAllConfiguration() {
-        Pattern p = Pattern.compile("(.*).xml");
+        List<String> result = new ArrayList<String>();
+
         String path = ClassLoader.getSystemResource("conf/dih/").getFile();
-        String[] s = new File(path).list();
-        List<String> files = new ArrayList<String>();
-        for (String filename : s) {
-            Matcher m = p.matcher(filename);
-            if (m.matches()) {
-                files.add(filename);
-            }
+        Collection<File> files = FileUtils.listFiles(new File(path), new String[]{"xml"}, true);
+        for(File file : files) {
+            result.add(file.getAbsolutePath().replace(path, ""));
         }
-        return files;
+        return result;
     }
 
     /**

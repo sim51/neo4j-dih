@@ -11,6 +11,7 @@ import org.neo4j.graphdb.Result;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,6 +90,20 @@ public class ImporterServiceTest extends DIHUnitTest {
         Assert.assertEquals("root", row.get("user"));
         Assert.assertEquals("writer", row.get("role"));
         Assert.assertEquals("distant writer", row.get("description"));
+    }
+
+    @Test
+    public void getAllConfiguration_should_succeed() throws DIHException {
+        List<String> files = ImporterService.getAllConfiguration();
+
+        // Assert
+        // ~~~~~~
+        Assert.assertEquals(true, files.contains("example_complexe.xml"));
+        Assert.assertEquals(true, files.contains("example_invalid.xml"));
+        Assert.assertEquals(true, files.contains("example_malformed.xml"));
+        Assert.assertEquals(true, files.contains("example_ok.xml"));
+        Assert.assertEquals(true, files.contains("example_only_h2_with_periodic_commit.xml"));
+        Assert.assertEquals(true, files.contains("csv/example_csv.xml"));
     }
 
     @After
