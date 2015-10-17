@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataConfig clean="MATCH (n) OPTIONAL MATCH (n)-[r]-(m) DELETE n,r,m;">
+
+    <dataSource type="JSONDataSource"
+                name="json"
+                encoding="UTF-8"
+                url="file:///${project.build.testOutputDirectory}/datasource/json/example.json"
+                timeout="10000"/>
+
+
+    <graph>
+        <entity dataSource="json"
+                name="book"
+                xpath="$..book[*]">
+
+            <cypher>
+                CREATE (book$i:Book { title: '${book["title"]}' })
+            </cypher>
+
+        </entity>
+    </graph>
+
+</dataConfig>

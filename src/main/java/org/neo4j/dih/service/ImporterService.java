@@ -10,6 +10,7 @@ import org.neo4j.dih.bean.ScriptStatistics;
 import org.neo4j.dih.datasource.AbstractDataSource;
 import org.neo4j.dih.datasource.AbstractResultList;
 import org.neo4j.dih.datasource.file.csv.CSVDataSource;
+import org.neo4j.dih.datasource.file.json.JSONDataSource;
 import org.neo4j.dih.datasource.file.xml.XMLDataSource;
 import org.neo4j.dih.datasource.jdbc.JDBCDataSource;
 import org.neo4j.dih.exception.DIHException;
@@ -283,7 +284,6 @@ public class ImporterService {
     protected Map<String, AbstractDataSource> retrieveDataSources() throws DIHException {
         Map<String, AbstractDataSource> dataSources = new HashMap<String, AbstractDataSource>();
         for (DataSourceType dsConfig : config.getDataSource()) {
-            // TODO: make this more generic -> type == classname so we can find the class by its name
             // but we need a unique package
             switch (dsConfig.getType()) {
                 case "JDBCDataSource":
@@ -297,6 +297,10 @@ public class ImporterService {
                 case "XMLDataSource":
                     XMLDataSource xmlDataSource = new XMLDataSource(dsConfig);
                     dataSources.put(dsConfig.getName(), xmlDataSource);
+                    break;
+                case "JSONDataSource":
+                    JSONDataSource jsonDataSource = new JSONDataSource(dsConfig);
+                    dataSources.put(dsConfig.getName(), jsonDataSource);
                     break;
                 default:
                     try {
