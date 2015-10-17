@@ -4,7 +4,7 @@
     <dataSource type="CSVDataSource"
                 name="csv"
                 encoding="UTF-8"
-                url="file:///${project.build.testOutputDirectory}/datasource/file.csv"
+                url="file:///${project.build.testOutputDirectory}/datasource/csv/file.csv"
                 separator=";"
                 timeout="10000" />
 

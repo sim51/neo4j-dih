@@ -73,6 +73,7 @@ Here is the list of available datasource with theirs attributes :
   ** encoding : Encoding of the CSV file (Default: "UTF-8").
   ** separator : Character that is use as separator (Default: ";").
   ** timeout : Timeout (Default: 10000)
+  ** withHeaders : true/false, if CSV file has an header row (Default: false)
 
  * *XMLDatasource* : Define a XML file. You will be able to make *xpath* query on it.
   ** type (mandatory): Must be `XMLDataSource `
@@ -116,7 +117,7 @@ Others caractresitics will depend on its datasource :
 
 * *CSVDatasource* :
  ** There is no additional attribute for this datasrouce, because we can't do any `query` operation on a CSV file.
- ** Type of this entity is just an array of String (String[]). SO in your cypher script you can acces to a value like this `${entity[0]}`
+ ** Type of this entity is just an array of String (String[]). So in your cypher script you can access to a value like this `${entity[0]}` or `${entity["columnName"]}` with header.
 
 * *XMLDatasource* :
  ** xpath (mandatory) : An xpath query, for example : `xpath="/users/user[@id='${people.ID}']"`. As you can see here, we use a previous entity value `${people.ID}`. Yes ! you can link your entities.

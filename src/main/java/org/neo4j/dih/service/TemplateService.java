@@ -2,7 +2,6 @@ package org.neo4j.dih.service;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -12,11 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.StringWriter;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Velocity template service.
@@ -66,12 +62,15 @@ public class TemplateService {
      * @return The compile template
      */
     public String compile(String template, Map<String, Object> variables) {
-        VelocityContext context = contructContext(variables);
+        VelocityContext context = constructContext(variables);
         // Compile the template with variables
         StringWriter sw = new StringWriter();
         velocity.evaluate(context, sw, "DIH", template);
         // Return the compile template
-        return sw.toString();
+        String result = sw.toString();
+        if(log.isDebugEnabled())
+            log.debug("Velocity compile template \n template => %s \n\n variables => %s \n\n result => %s", template, variables, result);
+        return result;
     }
 
     /**
@@ -83,12 +82,8 @@ public class TemplateService {
      */
     public String compile(File template, Map<String, Object> variables) {
         try {
-            VelocityContext context = contructContext(variables);
-            // Compile the template with variables
-            StringWriter sw = new StringWriter();
-            velocity.evaluate(context, sw, "DIH", FileUtils.readFileToString(template, "UTF-8"));
-            // Return the compile template
-            return sw.toString();
+            String templateContent =  FileUtils.readFileToString(template, "UTF-8");
+            return this.compile(templateContent, variables);
         } catch (java.io.IOException e) {
             throw  new DIHRuntimeException("Error on generate volicity template " + template.getName());
         }
@@ -99,7 +94,7 @@ public class TemplateService {
      * @param variables
      * @return
      */
-    private VelocityContext contructContext(Map<String, Object> variables) {
+    private VelocityContext constructContext(Map<String, Object> variables) {
         // adding velocity tools to context
         ToolManager velocityToolManager = new ToolManager();
         velocityToolManager.configure("velocity-tools.xml");

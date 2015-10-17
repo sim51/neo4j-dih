@@ -49,9 +49,9 @@ public class CSVResultList extends AbstractResultList {
     private String encoding;
 
     /**
-     * With CSV header.
+     * With CSV headers.
      */
-    private Boolean withHeader = Boolean.FALSE;
+    private Boolean withHeaders = Boolean.FALSE;
 
     /**
      * CSV header columns.
@@ -70,10 +70,10 @@ public class CSVResultList extends AbstractResultList {
      * @param timeout    Timeout
      * @param encoding   Encoding of the CSV file.
      * @param separator  Separator of the CSV file.
-     * @param withHeader Is there a header in CSV file
+     * @param withHeaders Is there a header in CSV file
      * @throws DIHException
      */
-    public CSVResultList(String url, BigInteger timeout, String encoding, String separator, Boolean withHeader) throws DIHException {
+    public CSVResultList(String url, BigInteger timeout, String encoding, String separator, Boolean withHeaders) throws DIHException {
         try {
             URLConnection connection = new URL(url).openConnection();
             connection.setConnectTimeout(timeout.intValue());
@@ -81,12 +81,12 @@ public class CSVResultList extends AbstractResultList {
             this.encoding = encoding;
             this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream));
             this.csvReader = new CSVReader(bufferedReader, separator.charAt(0));
-            this.withHeader = withHeader;
+            this.withHeaders = withHeaders;
 
             step();
 
-            if(withHeader) {
-                readHeader();
+            if(withHeaders) {
+                readHeaders();
             }
         } catch (IOException e) {
             throw new DIHException(e);
@@ -96,7 +96,7 @@ public class CSVResultList extends AbstractResultList {
     /**
      * Read CSV Header.
      */
-    private void readHeader() throws IOException {
+    private void readHeaders() throws IOException {
         headers = new ArrayList<>();
         for (int i = 0; i < current.length; i++) {
             headers.add(i, current[i]);
@@ -126,7 +126,7 @@ public class CSVResultList extends AbstractResultList {
         Map<Object, String> rs = new HashMap();
 
         for (int i = 0; i < current.length; i++) {
-            if(withHeader) {
+            if(withHeaders) {
                 String name = headers.get(i);
                 rs.put(name, current[i]);
             }

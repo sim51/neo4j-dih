@@ -1,9 +1,12 @@
 package org.neo4j.dih;
 
+import org.apache.commons.lang.StringUtils;
 import org.h2.tools.Server;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.harness.ServerControls;
 import org.neo4j.harness.TestServerBuilders;
 import org.neo4j.test.TestGraphDatabaseFactory;
@@ -73,7 +76,7 @@ public class DIHUnitTest {
     protected void initH2() throws SQLException {
         // Create H2 database
         this.h2 = Server.createTcpServer().start();
-        Connection connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test;INIT=runscript from 'classpath:/datasource/init.sql'", "SA", "");
+        Connection connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test;INIT=runscript from 'classpath:/datasource/jdbc/init.sql'", "SA", "");
         connection.close();
     }
 
@@ -82,5 +85,17 @@ public class DIHUnitTest {
      */
     protected void destroyH2() throws SQLException {
         this.h2.stop();
+    }
+
+    protected Result cypher(String script) {
+        Result rs = null;
+
+        if (!StringUtils.isEmpty(script)) {
+            try (Transaction tx = graphDb.beginTx()) {
+                rs = graphDb.execute(script);
+                tx.success();
+            }
+        }
+        return rs;
     }
 }

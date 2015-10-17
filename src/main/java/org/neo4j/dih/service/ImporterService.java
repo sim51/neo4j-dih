@@ -173,11 +173,9 @@ public class ImporterService {
             List<Object> listEntityOrCypher = graph.getEntityOrCypher();
             process(listEntityOrCypher, state);
 
-            // Execute the cypher script if we are not in periodic commit & debug mode
+            // Execute the cypher script if we are not in debug mode
             if (!debug) {
-                if (periodicCommit == null) {
-                    cypher(script);
-                }
+                cypher(script);
                 properties.setProperty(ImporterPropertiesService.LAST_INDEX_TIME, date);
                 properties.save();
             }

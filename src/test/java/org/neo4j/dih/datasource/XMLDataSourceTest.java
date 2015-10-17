@@ -18,7 +18,7 @@ public class XMLDataSourceTest extends DIHUnitTest {
 
     @Test
     public void execute_on_local_file_should_succeed() throws DIHException {
-        XMLDataSource xml = getXMLDataSource("file://" + ClassLoader.getSystemResource("datasource/users.xml").getFile());
+        XMLDataSource xml = getXMLDataSource("file://" + ClassLoader.getSystemResource("datasource/xml/users.xml").getFile());
         xml.start();
 
         // Assert

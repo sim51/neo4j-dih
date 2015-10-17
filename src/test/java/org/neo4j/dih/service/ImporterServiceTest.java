@@ -89,7 +89,6 @@ public class ImporterServiceTest extends DIHUnitTest {
         Assert.assertEquals("root", row.get("user"));
         Assert.assertEquals("writer", row.get("role"));
         Assert.assertEquals("distant writer", row.get("description"));
-
     }
 
     @After

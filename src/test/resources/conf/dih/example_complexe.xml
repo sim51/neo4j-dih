@@ -4,13 +4,13 @@
     <dataSource type="XMLDataSource"
                 name="xml"
                 encoding="UTF-8"
-                url="file:///${project.build.testOutputDirectory}/datasource/users.xml"
+                url="file:///${project.build.testOutputDirectory}/datasource/xml/users.xml"
                 timeout="10000"/>
 
     <dataSource type="CSVDataSource"
                 name="csv"
                 encoding="UTF-8"
-                url="file:///${project.build.testOutputDirectory}/datasource/file.csv"
+                url="file:///${project.build.testOutputDirectory}/datasource/csv/file.csv"
                 separator=";"
                 timeout="10000"/>
 

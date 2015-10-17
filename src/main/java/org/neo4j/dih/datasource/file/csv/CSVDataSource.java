@@ -38,7 +38,7 @@ public class CSVDataSource extends AbstractDataSource {
     /**
      * If there is a header in CSV file.
      */
-    private Boolean withHeader = Boolean.FALSE;
+    private Boolean withHeaders = Boolean.FALSE;
 
     /**
      * Timeout.
@@ -65,8 +65,8 @@ public class CSVDataSource extends AbstractDataSource {
         if (config.getTimeout() != null) {
             this.timeout = config.getTimeout();
         }
-        if (config.isWithHeader()) {
-            this.withHeader = config.isWithHeader();
+        if (config.isWithHeaders() != null && config.isWithHeaders()) {
+            this.withHeaders = config.isWithHeaders();
         }
     }
 
@@ -80,7 +80,7 @@ public class CSVDataSource extends AbstractDataSource {
      */
     @Override
     public AbstractResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
-        return new CSVResultList(url, timeout, encoding, separator, withHeader);
+        return new CSVResultList(url, timeout, encoding, separator, withHeaders);
     }
 
     @Override

@@ -4,9 +4,10 @@
     <dataSource type="CSVDataSource"
                 name="csv"
                 encoding="UTF-8"
-                url="http://data.nantes.fr/api/publication/24440040400129_VDN_VDN_00041/PRENOM_ENFANT_SLICE_STBL/content/?format=csv"
-                separator=","
-                timeout="10000"/>
+                url="file:///${project.build.testOutputDirectory}/datasource/csv/file_with_header.csv"
+                separator=";"
+                timeout="10000"
+                withHeaders="true"/>
 
 
     <graph periodicCommit="10">
@@ -14,7 +15,7 @@
                 name="line">
 
             <cypher>
-                CREATE (csv$i:Node { firstname :'${line[0]}', lastName : '${line[1]}' })
+                CREATE (csv$i:Role { name: '${line["ROLE"]}' })
             </cypher>
 
         </entity>
