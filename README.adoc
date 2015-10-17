@@ -199,7 +199,7 @@ Moreover, this adding some debug output.
 
 Open your browser at this location `http://localhost:7474/dih/index.html` to see the administration interface.
 
-image::documentation/assets/administration-interface.png[]
+image::administration-interface.png[]
 
 This interface permit to :
 
