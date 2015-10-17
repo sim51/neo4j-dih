@@ -21,7 +21,10 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Result for a XMLDataSource.
+ * ResultSet for {@link org.neo4j.dih.datasource.file.xml.XMLDataSource} object.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class XMLResultList extends AbstractResultList {
 
@@ -52,7 +55,7 @@ public class XMLResultList extends AbstractResultList {
      * @param timeout   Timeout
      * @param encoding  Encoding of the XML file.
      * @param query     For each XPATH query
-     * @throws DIHException
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public XMLResultList(String url, BigInteger timeout, String encoding, String query) throws DIHException {
         try {
@@ -75,11 +78,13 @@ public class XMLResultList extends AbstractResultList {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         return current < (nodeList.getLength() -1);
     }
 
+    /** {@inheritDoc} */
     @Override
     public XMLResult next() {
         current++;
@@ -87,6 +92,7 @@ public class XMLResultList extends AbstractResultList {
         return new XMLResult(node);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         stream.close();

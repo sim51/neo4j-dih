@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Result of a JDBCDataSource execution.
+ * * ResultSet for {@link org.neo4j.dih.datasource.jdbc.JDBCDataSource} object.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class JDBCResultList extends AbstractResultList {
 
@@ -37,10 +40,11 @@ public class JDBCResultList extends AbstractResultList {
     private Map<String, Object> current;
 
     /**
-     * Constructor.
+     * Default constructor.
      *
-     * @param query
-     * @throws DIHException
+     * @param query a {@link java.lang.String} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
+     * @param connection a {@link java.sql.Connection} object.
      */
     public JDBCResultList(Connection connection, String query) throws DIHException {
         try {
@@ -52,12 +56,13 @@ public class JDBCResultList extends AbstractResultList {
         step();
     }
 
-
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         return current != null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> next() {
         Map<String, Object> rs = current;
@@ -65,6 +70,7 @@ public class JDBCResultList extends AbstractResultList {
         return rs;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         try {

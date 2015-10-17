@@ -16,6 +16,9 @@ import java.util.Map;
 
 /**
  * Velocity template service.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class TemplateService {
 
@@ -36,7 +39,8 @@ public class TemplateService {
 
     /**
      * Get instance of the singleton.
-     * @return
+     *
+     * @return a {@link org.neo4j.dih.service.TemplateService} object.
      */
     public static synchronized TemplateService getInstance() {
         if(instance == null) {

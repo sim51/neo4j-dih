@@ -31,6 +31,12 @@ import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * DIH extension endpoint.
+ *
+ * @author bsimard
+ * @version $Id: $Id
+ */
 @Path("/")
 public class DataImportHandlerExtension {
 
@@ -52,18 +58,25 @@ public class DataImportHandlerExtension {
     /**
      * Constructor.
      *
-     * @param database
+     * @param database a {@link org.neo4j.graphdb.GraphDatabaseService} object.
      */
     public DataImportHandlerExtension(@Context GraphDatabaseService database) {
         this.database = database;
     }
 
+    /**
+     * Endpoint that execute an import process.
+     *
+     * @param name Name of the configuration file
+     * @param clean Does clean mode is activated ?
+     * @param debug Does debug mode is activated ?
+     * @return a {@link javax.ws.rs.core.Response} object.
+     */
     @POST
     @Path("/api/import")
     public Response execute(@FormParam("name") String name,
                            @FormParam("clean") Boolean clean,
-                           @FormParam("debug") Boolean debug,
-                            @Context Request request) {
+                           @FormParam("debug") Boolean debug) {
         try {
             ImporterService importer = new ImporterService(database, name, clean, debug);
             importer.execute();
@@ -73,6 +86,12 @@ public class DataImportHandlerExtension {
         }
     }
 
+    /**
+     * Endpoint to list all import configuration files found.
+     *
+     * @return a {@link javax.ws.rs.core.Response} object.
+     * @throws java.io.IOException if any.
+     */
     @GET
     @Path("/api/listing")
     public Response listing() throws IOException {
@@ -80,12 +99,23 @@ public class DataImportHandlerExtension {
         return Response.ok(new ObjectMapper().writeValueAsString(files), MediaType.APPLICATION_JSON).build();
     }
 
+    /**
+     * Just a ping endpoint, because it's always to have one.
+     *
+     * @return a {@link javax.ws.rs.core.Response} object.
+     */
     @GET
     @Path("/api/ping")
     public Response ping() {
         return Response.ok("Pong".getBytes(Charset.forName("UTF-8")), MediaType.TEXT_PLAIN).build();
     }
 
+    /**
+     * Endpoint that return the content of an import configuration (or property) file.
+     *
+     * @param name Name of the configuration/properties file
+     * @return a {@link javax.ws.rs.core.Response} object.
+     */
     @GET
     @Path("/api/get")
     public Response getConfig(@QueryParam("name") String name) {
@@ -97,6 +127,12 @@ public class DataImportHandlerExtension {
         }
     }
 
+    /**
+     * Static web server files.
+     *
+     * @param file a {@link java.lang.String} object.
+     * @return a {@link javax.ws.rs.core.Response} object.
+     */
     @GET
     @Path("{file:(?i).+\\.(png|jpg|jpeg|svg|gif|html?|js|css|txt)}")
     public Response file(@PathParam("file") String file) {

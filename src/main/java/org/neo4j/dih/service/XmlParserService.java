@@ -20,6 +20,9 @@ import java.net.URISyntaxException;
 
 /**
  * Server that parse the XML DIH config file.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class XmlParserService {
 
@@ -61,7 +64,9 @@ public class XmlParserService {
      * Method that parse an XML file.
      *
      * @param filename The DIH XML filename to parse
-     * @throws JAXBException
+     * @throws JAXBException if any.
+     * @return a {@link generated.DataConfig} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public DataConfig execute(String filename) throws DIHException {
         File file = this.findConfigFileByName(filename);
@@ -77,8 +82,9 @@ public class XmlParserService {
      * Find the config file by its name.
      * If no file is found, it return an <code>DIHException</code> exception.
      *
-     * @param name
-     * @return
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link java.io.File} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     protected File findConfigFileByName(String name) throws DIHException {
         if (ClassLoader.getSystemResource("conf/dih/" + name) == null) {

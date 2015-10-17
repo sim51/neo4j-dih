@@ -13,6 +13,12 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.Map;
 
+/**
+ * Define a CSV datasource type.
+ *
+ * @author bsimard
+ * @version $Id: $Id
+ */
 public class CSVDataSource extends AbstractDataSource {
 
     /**
@@ -48,7 +54,7 @@ public class CSVDataSource extends AbstractDataSource {
     /**
      * Default constructor.
      *
-     * @param config
+     * @param config a {@link generated.DataSourceType} object.
      */
     public CSVDataSource(DataSourceType config) {
         super(config);
@@ -71,22 +77,21 @@ public class CSVDataSource extends AbstractDataSource {
     }
 
     /**
-     * Execute the CSV entity, ie. read the CSV file.
+     * {@inheritDoc}
      *
-     * @param entity The entity to execute.
-     * @param state  Current state of all declare variable.
-     * @return
-     * @throws DIHException
+     * Execute the CSV entity, ie. read the CSV file.
      */
     @Override
     public AbstractResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
         return new CSVResultList(url, timeout, encoding, separator, withHeaders);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void start() throws DIHException {
     }
 
+    /** {@inheritDoc} */
     @Override
     public void finish() throws DIHException {
     }

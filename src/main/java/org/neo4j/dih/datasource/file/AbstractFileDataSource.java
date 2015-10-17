@@ -7,6 +7,12 @@ import org.neo4j.dih.exception.DIHRuntimeException;
 
 import java.math.BigInteger;
 
+/**
+ * Just an abstraction for define file datasource type.
+ *
+ * @author bsimard
+ * @version $Id: $Id
+ */
 public abstract class AbstractFileDataSource extends AbstractDataSource {
 
     /**
@@ -27,7 +33,7 @@ public abstract class AbstractFileDataSource extends AbstractDataSource {
     /**
      * Default constructor.
      *
-     * @param config
+     * @param config a {@link generated.DataSourceType} object.
      */
     public AbstractFileDataSource(DataSourceType config) {
         super(config);

@@ -9,34 +9,39 @@ import org.neo4j.dih.service.TemplateService;
 
 import java.util.Map;
 
+/**
+ * Define a XML datasource type.
+ *
+ * @author bsimard
+ * @version $Id: $Id
+ */
 public class XMLDataSource extends AbstractFileDataSource {
 
     /**
      * Default constructor.
      *
-     * @param config
+     * @param config a {@link generated.DataSourceType} object.
      */
     public XMLDataSource(DataSourceType config) {
         super(config);
     }
 
     /**
-     * Execute the XML entity, ie. read the XML file.
+     * {@inheritDoc}
      *
-     * @param entity The entity to execute.
-     * @param state  Current state of all declare variable.
-     * @return
-     * @throws DIHException
+     * Execute the XML entity, ie. read the XML file.
      */
     @Override
     public AbstractResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
         return new XMLResultList(url, timeout, encoding, TemplateService.getInstance().compile(entity.getXpath(), state));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void start() throws DIHException {
     }
 
+    /** {@inheritDoc} */
     @Override
     public void finish() throws DIHException {
     }

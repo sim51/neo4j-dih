@@ -15,7 +15,10 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * JDBC datasource.
+ * Define a JDBC datasource type.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class JDBCDataSource extends AbstractDataSource {
 
@@ -47,7 +50,8 @@ public class JDBCDataSource extends AbstractDataSource {
     /**
      * Default constructor.
      *
-     * @param config
+     * @param config a {@link generated.DataSourceType} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public JDBCDataSource(DataSourceType config) throws DIHException {
         super(config);
@@ -56,16 +60,19 @@ public class JDBCDataSource extends AbstractDataSource {
         this.url = config.getUrl();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void start() throws DIHException {
         this.connection = getConnection(user, password, url);
     }
 
+    /** {@inheritDoc} */
     @Override
     public JDBCResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
         return new JDBCResultList(connection, TemplateService.getInstance().compile(entity.getSql(), state));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void finish() throws DIHException {
         try {
@@ -79,8 +86,12 @@ public class JDBCDataSource extends AbstractDataSource {
     /**
      * Get the connection to the database.
      *
-     * @return
-     * @throws SQLException
+     * @throws SQLException if any.
+     * @param user a {@link java.lang.String} object.
+     * @param password a {@link java.lang.String} object.
+     * @param url a {@link java.lang.String} object.
+     * @return a {@link java.sql.Connection} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     protected Connection getConnection(String user, String password, String url) throws DIHException {
         Properties connectionProps = new Properties();

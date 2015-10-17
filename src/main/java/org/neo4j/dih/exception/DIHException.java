@@ -2,6 +2,9 @@ package org.neo4j.dih.exception;
 
 /**
  * DIH exception.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class DIHException extends Exception {
 

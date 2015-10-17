@@ -1,6 +1,5 @@
 package org.neo4j.dih.datasource.file.csv;
 
-import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import org.neo4j.dih.datasource.AbstractResultList;
 import org.neo4j.dih.exception.DIHException;
@@ -8,7 +7,10 @@ import org.neo4j.dih.exception.DIHRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
@@ -16,10 +18,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
- * Result for a CSVDataSource.
+ * ResultSet for {@link org.neo4j.dih.datasource.file.csv.CSVDataSource} object.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class CSVResultList extends AbstractResultList {
 
@@ -64,14 +68,14 @@ public class CSVResultList extends AbstractResultList {
     private String[] current;
 
     /**
-     * Constructor.
+     * Default constructor.
      *
      * @param url        Url of the CSV file
      * @param timeout    Timeout
      * @param encoding   Encoding of the CSV file.
      * @param separator  Separator of the CSV file.
      * @param withHeaders Is there a header in CSV file
-     * @throws DIHException
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public CSVResultList(String url, BigInteger timeout, String encoding, String separator, Boolean withHeaders) throws DIHException {
         try {
@@ -116,11 +120,13 @@ public class CSVResultList extends AbstractResultList {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         return current != null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<Object, String> next() {
         Map<Object, String> rs = new HashMap();
@@ -138,6 +144,7 @@ public class CSVResultList extends AbstractResultList {
         return rs;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
         this.stream.close();

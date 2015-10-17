@@ -10,34 +10,39 @@ import org.neo4j.dih.service.TemplateService;
 
 import java.util.Map;
 
+/**
+ * Define a JSON datasource type.
+ *
+ * @author bsimard
+ * @version $Id: $Id
+ */
 public class JSONDataSource extends AbstractFileDataSource {
 
     /**
      * Default constructor.
      *
-     * @param config
+     * @param config a {@link generated.DataSourceType} object.
      */
     public JSONDataSource(DataSourceType config) {
         super(config);
     }
 
     /**
-     * Execute the JSON entity, ie. read the JSON file.
+     * {@inheritDoc}
      *
-     * @param entity The entity to execute.
-     * @param state  Current state of all declare variable.
-     * @return
-     * @throws DIHException
+     * Execute the JSON entity, ie. read the JSON file.
      */
     @Override
     public AbstractResultList execute(EntityType entity, Map<String, Object> state) throws DIHException {
         return new JSONResultList(url, timeout, encoding, TemplateService.getInstance().compile(entity.getXpath(), state));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void start() throws DIHException {
     }
 
+    /** {@inheritDoc} */
     @Override
     public void finish() throws DIHException {
     }

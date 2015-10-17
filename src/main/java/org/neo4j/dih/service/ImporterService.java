@@ -32,6 +32,9 @@ import java.util.regex.Pattern;
 
 /**
  * Service that do the import job.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class ImporterService {
 
@@ -97,7 +100,7 @@ public class ImporterService {
     /**
      * Method that find all configuration files.
      *
-     * @return
+     * @return a {@link java.util.List} object.
      */
     public static List<String> getAllConfiguration() {
         List<String> result = new ArrayList<String>();
@@ -112,6 +115,12 @@ public class ImporterService {
 
     /**
      * Constructor.
+     *
+     * @param graphDb a {@link org.neo4j.graphdb.GraphDatabaseService} object.
+     * @param filename a {@link java.lang.String} object.
+     * @param clean a {@link java.lang.Boolean} object.
+     * @param debug a {@link java.lang.Boolean} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public ImporterService(GraphDatabaseService graphDb, String filename, Boolean clean, Boolean debug) throws DIHException {
 
@@ -136,7 +145,7 @@ public class ImporterService {
     /**
      * Execute the import.
      *
-     * @throws DIHException
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public void execute() throws DIHException {
 
@@ -226,9 +235,9 @@ public class ImporterService {
     /**
      * Process recursively a list of entity or cypher.
      *
-     * @param listEntityOrCypher
-     * @param state
-     * @throws DIHException
+     * @param listEntityOrCypher a {@link java.util.List} object.
+     * @param state a {@link java.util.Map} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     protected void process(List<Object> listEntityOrCypher, Map<String, Object> state) throws DIHException {
         for (Object obj : listEntityOrCypher) {
@@ -243,8 +252,9 @@ public class ImporterService {
     /**
      * Process an Entity.
      *
-     * @param entity
-     * @throws DIHException
+     * @param entity a {@link generated.EntityType} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
+     * @param state a {@link java.util.Map} object.
      */
     protected void processEntity(EntityType entity, Map<String, Object> state) throws DIHException {
         AbstractDataSource dataSource = dataSources.get(entity.getDataSource());
@@ -262,7 +272,8 @@ public class ImporterService {
     /**
      * Process a Cypher query.
      *
-     * @param cypher
+     * @param cypher a {@link java.lang.String} object.
+     * @param state a {@link java.util.Map} object.
      */
     protected void processCypher(String cypher, Map<String, Object> state) {
         iteration++;
@@ -279,7 +290,8 @@ public class ImporterService {
     /**
      * Retrieve and construct a map of datasource by their name.
      *
-     * @return
+     * @return a {@link java.util.Map} object.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     protected Map<String, AbstractDataSource> retrieveDataSources() throws DIHException {
         Map<String, AbstractDataSource> dataSources = new HashMap<String, AbstractDataSource>();
@@ -324,8 +336,8 @@ public class ImporterService {
     /**
      * Execute a Cypher query.
      *
-     * @param script
-     * @return
+     * @param script a {@link java.lang.String} object.
+     * @return a {@link org.neo4j.graphdb.Result} object.
      */
     protected Result cypher(String script) {
         Result rs = null;

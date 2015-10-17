@@ -26,7 +26,10 @@ import java.net.URLConnection;
 import java.util.Map;
 
 /**
- * Result for a XMLDataSource.
+ * * ResultSet for {@link org.neo4j.dih.datasource.file.json.JSONDataSource} object.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class JSONResultList extends AbstractResultList {
 
@@ -46,13 +49,13 @@ public class JSONResultList extends AbstractResultList {
     private Integer current = -1;
 
     /**
-     * Constructor.
+     * Default constructor.
      *
      * @param url       Url of the JSON file
      * @param timeout   Timeout
      * @param encoding  Encoding of the CSV file.
      * @param query     For each JSONPath query
-     * @throws DIHException
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public JSONResultList(String url, BigInteger timeout, String encoding, String query) throws DIHException {
         try {
@@ -70,11 +73,13 @@ public class JSONResultList extends AbstractResultList {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         return current < (rs.size() -1);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> next() {
         current++;
@@ -82,6 +87,7 @@ public class JSONResultList extends AbstractResultList {
         return next;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() throws IOException {
     }

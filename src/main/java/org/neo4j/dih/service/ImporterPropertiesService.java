@@ -11,6 +11,9 @@ import java.util.Properties;
 
 /**
  * Service that generate a property file for each importer.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class ImporterPropertiesService {
 
@@ -23,6 +26,10 @@ public class ImporterPropertiesService {
      * Name of the property for the last index date.
      */
     public static final String LAST_INDEX_TIME = "last_index_time";
+
+    /**
+     *  Default value for  <code>LAST_INDEX_TIME</code>.
+     *  */
     public static final String DEFAULT_VALUE_LAST_INDEX_TIME = "1970-01-01 00:00:00";
 
     /**
@@ -38,8 +45,8 @@ public class ImporterPropertiesService {
     /**
      * By calling the constructor, if property file doesn't exist, it will be created.
      *
-     * @param name       Name of the XML file for the import.
-     * @throws DIHException
+     * @param name Name of the XML file for the import.
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public ImporterPropertiesService(String name) throws DIHException {
         String fileFolder = ClassLoader.getSystemResource("conf/dih/").getFile();
@@ -58,8 +65,8 @@ public class ImporterPropertiesService {
     /**
      * Retrieve all properties of the file.
      *
-     * @return
-     * @throws DIHException
+     * @throws org.neo4j.dih.exception.DIHException if any.
+     * @return a {@link java.util.Properties} object.
      */
     public Properties readProperties() throws DIHException {
         try (FileInputStream fis = new FileInputStream(file.getPath())) {
@@ -74,8 +81,8 @@ public class ImporterPropertiesService {
     /**
      * Retrieve all properties of the file, and generate a <code>Map</code>.
      *
-     * @return
-     * @throws DIHException
+     * @throws org.neo4j.dih.exception.DIHException if any.
+     * @return a {@link java.util.Map} object.
      */
     public Map<String, Object> readPropertiesAsMap() throws DIHException {
         Map<String, Object> props = new HashMap<>();
@@ -93,8 +100,8 @@ public class ImporterPropertiesService {
      * Retrieve the value of a property.
      * If property is not found, we return <code>null</code>.
      *
-     * @param name
-     * @return
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link java.lang.Object} object.
      */
     public Object getProperty(String name) {
         return properties.getProperty(name);
@@ -112,6 +119,8 @@ public class ImporterPropertiesService {
 
     /**
      * Save the property file.
+     *
+     * @throws org.neo4j.dih.exception.DIHException if any.
      */
     public void save() throws DIHException {
         try (OutputStream out = new FileOutputStream(file)) {

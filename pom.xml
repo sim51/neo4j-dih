@@ -21,9 +21,9 @@
     <packaging>jar</packaging>
 
     <scm>
-        <connection>scm:git:git://github.com/neo4j-contrib/neo4j-dih.git</connection>
-        <developerConnection>scm:git:git@github.com:neo4j-contrib/neo4j-dih.git</developerConnection>
-        <url>https://github.com/neo4j-contrib/neo4j-dih</url>
+        <connection>scm:git:git://github.com/sim51/neo4j-dih.git</connection>
+        <developerConnection>scm:git:git@github.com:sim51/neo4j-dih.git</developerConnection>
+        <url>https://github.com/sim51/neo4j-dih</url>
         <tag>HEAD</tag>
     </scm>
 

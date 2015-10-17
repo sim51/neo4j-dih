@@ -2,6 +2,9 @@ package org.neo4j.dih.exception;
 
 /**
  * DIH runtime exception.
+ *
+ * @author bsimard
+ * @version $Id: $Id
  */
 public class DIHRuntimeException extends RuntimeException {
 
