@@ -112,7 +112,7 @@ NOTE: See paragraph 'How to write a new datasource type'
 
 ==== Element : graph
 
-This element is optional, it permit to create several independent imports phases.
+This element describe an import process. You can define several sibling graph element into your file, this permit to create several independent imports phases.
 
 *list of attributes :*
 
@@ -185,7 +185,7 @@ But you can specify your own query on the `dataConfig` xml entity like in this e
 
 [source, xml]
 ----
-include::src/test/resources/conf/dih/example_csv.xml[]
+include::src/test/resources/conf/dih/csv/example_csv.xml[lines=2]
 ----
 
 === Debug
