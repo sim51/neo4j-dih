@@ -17,7 +17,6 @@
         <velocity.version>1.7</velocity.version>
         <frontend-plugin.version>0.0.26</frontend-plugin.version>
         <java.version>1.7</java.version>
-        <github.global.server>github</github.global.server>
     </properties>
 
     <licenses>

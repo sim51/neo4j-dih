@@ -1,7 +1,7 @@
 language: java
 jdk:
 - openjdk7
-- openjdk8
+- oraclejdk8
 os:
   - linux
 env:
@@ -10,7 +10,7 @@ env:
     - NEO4J_VERSION=2.3.0-RC1
 script: "mvn clean test -Dneo4j.version=${NEO4J_VERSION}"
 after_success:
-  - mvn clean site
+  - mvn clean site -Dgithub.site.userName=${GITHUB_LOGIN} -Dgithub.global.password=${GITHUB_PASSWORD}
 notifications:
   email:
     on_success: never
