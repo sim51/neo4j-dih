@@ -261,6 +261,4 @@ So as you can see, it's just an auto-closeable iterator ! You can take example o
 * Make update sync or async ?
   -> Sync permit to keep ACID but how to do a rollback ? There no 2-way-commit, so for ACID ..
   -> Sync keep an open web thread till the end of the import (it's what is implement now, but if you call 100 time the import endpoint, this generate 100 imports)
-* CSV Datasource
-  -> test with stripping column
 * Adding JSON Datasource
