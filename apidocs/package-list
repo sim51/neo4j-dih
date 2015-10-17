@@ -1,0 +1,10 @@
+org.neo4j.dih
+org.neo4j.dih.bean
+org.neo4j.dih.datasource
+org.neo4j.dih.datasource.file
+org.neo4j.dih.datasource.file.csv
+org.neo4j.dih.datasource.file.json
+org.neo4j.dih.datasource.file.xml
+org.neo4j.dih.datasource.jdbc
+org.neo4j.dih.exception
+org.neo4j.dih.service
