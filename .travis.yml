@@ -1,0 +1,18 @@
+language: java
+jdk:
+- openjdk7
+- oraclejdk7
+- oraclejdk8
+os:
+  - linux
+env:
+  matrix:
+    - NEO4J_VERSION=2.2.5
+    - NEO4J_VERSION=2.3.0-RC1
+script: "mvn clean test -Dneo4j.version=${NEO4J_VERSION}"
+after_success:
+  - mvn clean site
+notifications:
+  email:
+    on_success: never
+    on_failure: change

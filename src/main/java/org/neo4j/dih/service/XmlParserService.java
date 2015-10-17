@@ -64,7 +64,6 @@ public class XmlParserService {
      * Method that parse an XML file.
      *
      * @param filename The DIH XML filename to parse
-     * @throws JAXBException if any.
      * @return a {@link generated.DataConfig} object.
      * @throws org.neo4j.dih.exception.DIHException if any.
      */

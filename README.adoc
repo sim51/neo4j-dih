@@ -14,6 +14,8 @@ endif::[]
 
 Synchronise Neo4j with an external datasource
 
+Project site : http://sim51.github.io/neo4j-dih/
+
 == Description
 
 This project is inspired from https://wiki.apache.org/solr/DataImportHandler[SolR's DIH].

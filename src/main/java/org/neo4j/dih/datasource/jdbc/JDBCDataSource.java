@@ -86,7 +86,6 @@ public class JDBCDataSource extends AbstractDataSource {
     /**
      * Get the connection to the database.
      *
-     * @throws SQLException if any.
      * @param user a {@link java.lang.String} object.
      * @param password a {@link java.lang.String} object.
      * @param url a {@link java.lang.String} object.
