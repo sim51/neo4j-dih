@@ -5,6 +5,12 @@ Synchronise Neo4j with an external datasource
 :toc:
 :toc-placement: preamble
 :toc-title: pass:[<b>Table of Contents</b>]
+:outfilesuffix-old: {outfilesuffix}
+ifdef::env-github[:outfilesuffix: .adoc]
+ifndef::env-github[]
+:idprefix:
+:idseparator: -
+endif::[]
 
 == Description
 
