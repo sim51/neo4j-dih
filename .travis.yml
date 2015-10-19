@@ -11,7 +11,7 @@ env:
 script: "mvn clean test -Dneo4j.version=${NEO4J_VERSION}"
 after_success:
   - echo "Neo4j version ${NEO4J_VERSION}"
-  - echo "JDK version ${jdk} - ${JDK}"
+  - env
   - if [[ "$NEO4J_VERSION" == "2.2.5" && "$jdk" == "openjdk7" ]]; then mvn clean site -Dgithub.site.userName=${GITHUB_LOGIN} -Dgithub.global.password=${GITHUB_PASSWORD}
 notifications:
   email:
