@@ -83,7 +83,7 @@ public class CSVResultList extends AbstractResultList {
             connection.setConnectTimeout(timeout.intValue());
             this.stream = connection.getInputStream();
             this.encoding = encoding;
-            this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(this.stream, encoding));
             this.csvReader = new CSVReader(bufferedReader, separator.charAt(0));
             this.withHeaders = withHeaders;
 

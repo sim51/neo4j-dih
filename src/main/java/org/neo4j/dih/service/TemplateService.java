@@ -101,8 +101,8 @@ public class TemplateService {
         VelocityContext context = new VelocityContext();
 
         // Put all variable into velocity context
-        for (String key : variables.keySet()) {
-            context.put(key, variables.get(key));
+        for (Map.Entry<String, Object> entry: variables.entrySet()) {
+            context.put(entry.getKey(), entry.getValue());
         }
         // Adding a var 'i' that is unique for this script
         // It serves as an ID

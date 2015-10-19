@@ -199,8 +199,8 @@ public class ImporterService {
      * @throws DIHException
      */
     private void starting() throws DIHException {
-        for (String key : dataSources.keySet()) {
-            dataSources.get(key).start();
+        for (Map.Entry<String, AbstractDataSource> entry : dataSources.entrySet()) {
+            dataSources.get(entry.getKey()).start();
         }
     }
 
@@ -210,8 +210,8 @@ public class ImporterService {
      * @throws DIHException
      */
     private void ending() throws DIHException {
-        for (String key : dataSources.keySet()) {
-            dataSources.get(key).finish();
+        for (Map.Entry<String, AbstractDataSource> entry : dataSources.entrySet()) {
+            dataSources.get(entry.getKey()).finish();
         }
     }
 
