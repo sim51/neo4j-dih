@@ -10,7 +10,7 @@ env:
     - NEO4J_VERSION=2.3.0-RC1
 script: "mvn clean test -Dneo4j.version=${NEO4J_VERSION}"
 after_success:
-  - if [[ "$NEO4J_VERSION" == "2.2.5" && "$TRAVIS_JDK_VERSION" == "openjdk7" &&  "TRAVIS_OS_NAME" == "linux" ]]; then mvn clean site -Dgithub.site.userName=${GITHUB_LOGIN} -Dgithub.global.password=${GITHUB_PASSWORD}; fi
+  - if [[ "$NEO4J_VERSION" == "2.2.5" && "$TRAVIS_JDK_VERSION" == "openjdk7" &&  "$TRAVIS_OS_NAME" == "linux" ]]; then mvn clean site -Dgithub.site.userName=${GITHUB_LOGIN} -Dgithub.global.password=${GITHUB_PASSWORD}; fi
 notifications:
   email:
     on_success: never

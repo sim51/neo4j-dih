@@ -78,7 +78,7 @@
         <maven.plugin.findbugs>3.0.1</maven.plugin.findbugs>
         <maven.plugin.version>2.2</maven.plugin.version>
         <maven.plugin.taglist>2.4</maven.plugin.taglist>
-
+        <maven.plugin.scm-publish>1.1</maven.plugin.scm-publish>
     </properties>
 
     <!-- ======================== -->
@@ -388,44 +388,28 @@
                    <locales>en</locales>
                 </configuration>
             </plugin>
+            <!-- Deploy site on github gh-pages -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>${maven.plugin.scm-publish}</version>
+                <configuration>
+                    <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}</checkinComment>
+                    <content>${project.reporting.outputDirectory}</content>
+                    <scmBranch>gh-pages</scmBranch>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>scm-publish</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>publish-scm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <!-- ============= -->
-    <!-- = Reporting = -->
-    <!-- ============= -->
-    <reporting>
-        <plugins>
-            <!-- Make site with all reports-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <configuration>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-            <!-- Code coverage -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <configuration>
-                    <formats>
-                        <format>html</format>
-                    </formats>
-                    <check/>
-                </configuration>
-            </plugin>
-            <!-- Java doc-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>generated</excludePackageNames>
-                    <failOnError>false</failOnError>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <!-- ================ -->
     <!-- = Repositories = -->
@@ -445,16 +429,8 @@
     <distributionManagement>
         <site>
             <id>github-site</id>
-            <url>gitsite:git@github.com/sim51/javagit.git</url>
+            <url>scm:git:git@github.com:sim51/neo4j-dih.git</url>
         </site>
-        <repository>
-            <id>logisima-releases</id>
-            <url>https://github.com/logisima/maven-repository/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>logisima-snapshots</id>
-            <url>https://github.com/logisima/maven-repository/snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 
 </project>
