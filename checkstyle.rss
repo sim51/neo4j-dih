@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.exception.DIHRuntimeException.java">org/neo4j/dih/exception/DIHRuntimeException.java</a>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.TemplateService.java">org/neo4j/dih/service/TemplateService.java</a>
                 </td>
                 <td>
                   0
@@ -55,119 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.json.JSONDataSource.java">org/neo4j/dih/datasource/file/json/JSONDataSource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.AbstractDataSource.java">org/neo4j/dih/datasource/AbstractDataSource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.xml.XMLDataSource.java">org/neo4j/dih/datasource/file/xml/XMLDataSource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.DataImportHandlerExtension.java">org/neo4j/dih/DataImportHandlerExtension.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  29
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.AbstractResultList.java">org/neo4j/dih/datasource/AbstractResultList.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.AbstractFileDataSource.java">org/neo4j/dih/datasource/file/AbstractFileDataSource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.XmlParserService.java">org/neo4j/dih/service/XmlParserService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  15
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.bean.ScriptStatistics.java">org/neo4j/dih/bean/ScriptStatistics.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  26
+                  20
                 </td>
               </tr>
                           <tr>
@@ -186,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.exception.DIHException.java">org/neo4j/dih/exception/DIHException.java</a>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.jdbc.JDBCDataSource.java">org/neo4j/dih/datasource/jdbc/JDBCDataSource.java</a>
                 </td>
                 <td>
                   0
@@ -195,35 +83,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.ImporterPropertiesService.java">org/neo4j/dih/service/ImporterPropertiesService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  21
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.xml.XMLResultList.java">org/neo4j/dih/datasource/file/xml/XMLResultList.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  16
+                  22
                 </td>
               </tr>
                           <tr>
@@ -242,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.jdbc.JDBCDataSource.java">org/neo4j/dih/datasource/jdbc/JDBCDataSource.java</a>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.json.JSONDataSource.java">org/neo4j/dih/datasource/file/json/JSONDataSource.java</a>
                 </td>
                 <td>
                   0
@@ -251,12 +111,12 @@ under the License.
                   0
                 </td>
                 <td>
-                  21
+                  8
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.TemplateService.java">org/neo4j/dih/service/TemplateService.java</a>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.exception.DIHRuntimeException.java">org/neo4j/dih/exception/DIHRuntimeException.java</a>
                 </td>
                 <td>
                   0
@@ -265,12 +125,12 @@ under the License.
                   0
                 </td>
                 <td>
-                  20
+                  3
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.ImporterService.java">org/neo4j/dih/service/ImporterService.java</a>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.bean.ScriptStatistics.java">org/neo4j/dih/bean/ScriptStatistics.java</a>
                 </td>
                 <td>
                   0
@@ -279,21 +139,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  53
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.csv.CSVDataSource.java">org/neo4j/dih/datasource/file/csv/CSVDataSource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
+                  26
                 </td>
               </tr>
                           <tr>
@@ -321,7 +167,161 @@ under the License.
                   0
                 </td>
                 <td>
-                  13
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.XmlParserService.java">org/neo4j/dih/service/XmlParserService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.csv.CSVDataSource.java">org/neo4j/dih/datasource/file/csv/CSVDataSource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.xml.XMLResultList.java">org/neo4j/dih/datasource/file/xml/XMLResultList.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.AbstractFileDataSource.java">org/neo4j/dih/datasource/file/AbstractFileDataSource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.file.xml.XMLDataSource.java">org/neo4j/dih/datasource/file/xml/XMLDataSource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.exception.DIHException.java">org/neo4j/dih/exception/DIHException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.DataImportHandlerExtension.java">org/neo4j/dih/DataImportHandlerExtension.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.ImporterService.java">org/neo4j/dih/service/ImporterService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  53
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.AbstractResultList.java">org/neo4j/dih/datasource/AbstractResultList.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.service.ImporterPropertiesService.java">org/neo4j/dih/service/ImporterPropertiesService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  22
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://sim51.github.io/neo4j-dih/checkstyle.html#org.neo4j.dih.datasource.AbstractDataSource.java">org/neo4j/dih/datasource/AbstractDataSource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
                 </td>
               </tr>
                       </tbody>
