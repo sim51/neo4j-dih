@@ -10,7 +10,11 @@ env:
     - NEO4J_VERSION=2.3.0-RC1
 script: "mvn clean test -Dneo4j.version=${NEO4J_VERSION}"
 after_success:
-  - if [[ "$NEO4J_VERSION" == "2.2.5" && "$TRAVIS_JDK_VERSION" == "openjdk7" &&  "$TRAVIS_OS_NAME" == "linux" ]]; then mvn clean site -Dgithub.site.userName=${GITHUB_LOGIN} -Dgithub.global.password=${GITHUB_PASSWORD}; fi
+  - eval "$(ssh-agent -s)" #start the ssh agent
+  - cat $TRAVIS_SSH_KEY > .travis/deploy_key.gem
+  - chmod 600 .travis/deploy_key.pem # this key should have push access
+  - ssh-add .travis/deploy_key.pem
+  - if [[ "$NEO4J_VERSION" == "2.2.5" && "$TRAVIS_JDK_VERSION" == "openjdk7" &&  "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_PULL_REQUEST" == "false"]]; then mvn clean site -Dgithub.site.userName=${GITHUB_LOGIN} -Dgithub.global.password=${GITHUB_PASSWORD}; fi
 notifications:
   email:
     on_success: never
