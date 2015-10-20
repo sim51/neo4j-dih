@@ -12,6 +12,8 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_db5709a4bccd_key -iv $encrypted_db5709a4bccd_iv -in .travis-key.enc -out .travis-key -d
 script: "mvn clean test -Dneo4j.version=${NEO4J_VERSION}"
 after_success:
+  - git config --global user.email "travis@bsimard.com"
+  - git config --global user.name "Travis CI"
   - eval "$(ssh-agent -s)" #start the ssh agent
   - chmod 600 .travis-key
   - ssh-add .travis-key
